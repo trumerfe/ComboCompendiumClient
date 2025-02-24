@@ -1,0 +1,115 @@
+// styles/abstracts/_variables.scss
+
+// Colors
+$colors: (
+  'primary': #3b82f6,
+  'secondary': #6b7280,
+  'success': #10b981,
+  'error': #ef4444,
+  'warning': #f59e0b,
+  'info': #3b82f6
+);
+
+// Typography
+$font-sizes: (
+  'xs': 0.75rem,    // 12px
+  'sm': 0.875rem,   // 14px
+  'base': 1rem,     // 16px
+  'lg': 1.125rem,   // 18px
+  'xl': 1.25rem,    // 20px
+  '2xl': 1.5rem,    // 24px
+  '3xl': 1.875rem,  // 30px
+  '4xl': 2.25rem    // 36px
+);
+
+// Breakpoints
+$breakpoints: (
+  'xs': 480px,
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px
+);
+
+// Spacing system
+$spacing: (
+  '0': 0,
+  '1': 0.25rem,   // 4px
+  '2': 0.5rem,    // 8px
+  '3': 0.75rem,   // 12px
+  '4': 1rem,      // 16px
+  '5': 1.25rem,   // 20px
+  '6': 1.5rem,    // 24px
+  '8': 2rem,      // 32px
+  '10': 2.5rem,   // 40px
+  '12': 3rem,     // 48px
+  '16': 4rem,     // 64px
+  '20': 5rem,     // 80px
+  '24': 6rem      // 96px
+);
+
+// Container widths
+$container-max-widths: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px
+);
+
+// Z-index layers
+$z-layers: (
+  'base': 1,
+  'above': 2,
+  'dropdown': 10,
+  'modal': 20,
+  'tooltip': 30
+);
+
+// Radius
+$radius: (
+  'sm': 0.125rem,   // 2px
+  'base': 0.25rem,  // 4px
+  'md': 0.375rem,   // 6px
+  'lg': 0.5rem,     // 8px
+  'xl': 0.75rem,    // 12px
+  '2xl': 1rem,      // 16px
+  'full': 9999px
+);
+
+// Border widths
+$border-widths: (
+  'none': 0,
+  'thin': 1px,
+  'base': 2px,
+  'thick': 3px
+);
+
+// CSS Variables for theme support
+:root {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f3f4f6;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --primary-color: #{map-get($colors, 'primary')};
+  
+  // Standard component padding
+  --padding-page: #{map-get($spacing, '8')};
+  --padding-card: #{map-get($spacing, '5')};
+  --padding-input: #{map-get($spacing, '2')} #{map-get($spacing, '4')};
+  
+  // Responsive paddings
+  --padding-page-sm: #{map-get($spacing, '6')};
+  --padding-page-xs: #{map-get($spacing, '4')};
+}
+
+// Dark theme variables
+[data-theme="dark"] {
+  --color-bg-primary: #1f2937;
+  --color-bg-secondary: #111827;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #e5e7eb;
+  --color-border: #374151;
+}

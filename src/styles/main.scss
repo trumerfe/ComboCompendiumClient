@@ -1,0 +1,22 @@
+// src_new/styles/main.scss
+// Import all styles
+
+// Base styles
+@use 'base/reset';
+@use 'base/typography';
+
+// Abstract styles
+@use 'abstracts/variables';
+@use 'abstracts/breakpoints';
+@use 'abstracts/mixins';
+
+// Component styles
+@use 'components/card';
+@use 'components/buttons';
+
+// Layout styles
+@use 'layout/containers';
+
+// Utility styles
+@use 'utils/spacing';
+@use 'utils/helpers';

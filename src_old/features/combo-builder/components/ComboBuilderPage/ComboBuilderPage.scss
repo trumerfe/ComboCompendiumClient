@@ -1,0 +1,352 @@
+// features/combo-builder/components/ComboBuilderPage/ComboBuilderPage.scss
+@import '../../../../styles/abstracts/variables';
+@import '../../../../styles/abstracts/mixins';
+@import '../../../../styles/abstracts/functions';
+
+.combo-builder-page {
+  // Direct padding instead of mixin for reliability
+  padding: 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+  
+  @media (max-width: 640px) {
+    padding: 1rem;
+  }
+  
+  &__title {
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #1f2937);
+  }
+
+  &__section {
+    margin-bottom: 2.5rem;
+  }
+
+  &__section-title {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  // Combo listing section
+  &__combos-list {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__combo-card {
+    // Glassmorphism effect
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    padding: 1.25rem;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.15);
+    }
+  }
+
+  &__combo-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  &__combo-sequence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__move {
+    background-color: var(--color-bg-primary, #ffffff);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    border: 1px solid var(--color-border, #e5e7eb);
+    font-size: 0.875rem;
+    
+    // Special styling for different move types
+    &--normal {
+      background-color: #f3f4f6;
+    }
+    
+    &--special {
+      background-color: #dbeafe;
+      border-color: #93c5fd;
+    }
+    
+    &--super {
+      background-color: #fee2e2;
+      border-color: #fca5a5;
+    }
+  }
+
+  &__combo-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color-text-secondary, #6b7280);
+    font-size: 0.875rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  &__combo-damage {
+    font-weight: 500;
+  }
+  
+  &__combo-difficulty {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    
+    &--easy {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    &--medium {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    
+    &--hard {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+  }
+
+  // Builder workspace
+  &__workspace {
+    // Glassmorphism effect
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    padding: 2rem;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--color-text-secondary, #6b7280);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    &-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    &-message {
+      max-width: 400px;
+      margin-bottom: 1.5rem;
+    }
+    
+    &-actions {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+  
+  &__control-panel {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  &__button {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: #2563eb;
+    }
+    
+    &--secondary {
+      background-color: transparent;
+      border: 1px solid var(--primary-color, #3b82f6);
+      color: var(--primary-color, #3b82f6);
+      
+      &:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+      }
+    }
+    
+    &--danger {
+      background-color: #ef4444;
+      
+      &:hover {
+        background-color: #dc2626;
+      }
+    }
+  }
+
+  &__loading,
+  &__error {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.25rem;
+  }
+
+  &__error {
+    color: #ef4444;
+  }
+  
+  // Move selector
+  &__move-selector {
+    margin-top: 2rem;
+    width: 100%;
+  }
+  
+  &__moves-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+  }
+  
+  &__move-item {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    &--active {
+      border: 2px solid var(--primary-color, #3b82f6);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    
+    &--normal {
+      border-left: 3px solid #9ca3af;
+    }
+    
+    &--special {
+      border-left: 3px solid #3b82f6;
+    }
+    
+    &--super {
+      border-left: 3px solid #ef4444;
+    }
+  }
+}
+
+// Dark theme support
+[data-theme="dark"] {
+  .combo-builder-page {
+    &__combo-card {
+      background: rgba(30, 30, 30, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    &__move {
+      background-color: rgba(30, 30, 30, 0.5);
+      border-color: rgba(255, 255, 255, 0.1);
+      
+      &--normal {
+        background-color: #374151;
+      }
+      
+      &--special {
+        background-color: #1e3a8a;
+        border-color: #3b82f6;
+      }
+      
+      &--super {
+        background-color: #7f1d1d;
+        border-color: #ef4444;
+      }
+    }
+    
+    &__workspace {
+      background: rgba(30, 30, 30, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      
+      &:hover {
+        background: rgba(30, 30, 30, 0.25);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+    
+    &__move-item {
+      background: rgba(30, 30, 30, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      
+      &--active {
+        background: rgba(59, 130, 246, 0.2);
+      }
+    }
+    
+    &__combo-difficulty {
+      &--easy {
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #d1fae5;
+      }
+      
+      &--medium {
+        background-color: rgba(245, 158, 11, 0.2);
+        color: #fef3c7;
+      }
+      
+      &--hard {
+        background-color: rgba(239, 68, 68, 0.2);
+        color: #fee2e2;
+      }
+    }
+  }
+}

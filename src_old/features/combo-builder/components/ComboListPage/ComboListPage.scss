@@ -1,0 +1,55 @@
+// features/combo-builder/components/ComboListPage/ComboListPage.scss
+@import '../../../../styles/abstracts/variables';
+@import '../../../../styles/abstracts/mixins';
+
+.combo-list-page {
+  width: 100%;
+  
+  &__header {
+    background-color: var(--color-bg-secondary);
+    padding: map-get($spacing, '4');
+    margin-bottom: map-get($spacing, '6');
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  &__breadcrumbs {
+    @include text-style('sm');
+    color: var(--color-text-secondary);
+    
+    span:not(:last-child) {
+      &:nth-child(even) {
+        margin: 0 map-get($spacing, '2');
+        color: var(--color-text-secondary);
+      }
+      
+      &:nth-child(odd) {
+        color: var(--color-text-primary);
+        font-weight: 500;
+      }
+    }
+    
+    span:last-child {
+      color: map-get($colors, 'primary');
+      font-weight: 600;
+    }
+  }
+  
+  &__error {
+    text-align: center;
+    padding: map-get($spacing, '8');
+    background-color: var(--color-bg-secondary);
+    border-radius: 0.5rem;
+    margin: map-get($spacing, '8') auto;
+    max-width: 600px;
+    
+    h2 {
+      @include text-style('xl', 600);
+      color: map-get($colors, 'error');
+      margin-bottom: map-get($spacing, '4');
+    }
+    
+    p {
+      color: var(--color-text-secondary);
+    }
+  }
+}

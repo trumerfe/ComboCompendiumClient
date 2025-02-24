@@ -1,0 +1,81 @@
+// src_new/styles/layout/_containers.scss
+@use "../abstracts/breakpoints" as breakpoints;
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
+}
+
+.page {
+  padding: var(--page-padding);
+  
+  &__header {
+    margin-bottom: var(--spacing-8);
+    
+    &-title {
+      font-size: var(--text-3xl);
+      margin-bottom: var(--spacing-2);
+    }
+    
+    &-subtitle {
+      color: var(--color-text-secondary);
+    }
+  }
+  
+  &__content {
+    margin-bottom: var(--spacing-8);
+  }
+  
+  &__section {
+    margin-bottom: var(--section-spacing);
+    
+    &-title {
+      margin-bottom: var(--spacing-6);
+      font-size: var(--text-2xl);
+    }
+  }
+}
+
+.grid {
+  display: grid;
+  gap: var(--component-gap);
+  grid-template-columns: 1fr;
+  
+  @include breakpoints.respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include breakpoints.respond-to('lg') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @include breakpoints.respond-to('xl') {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+  
+  &__sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background-color: var(--color-bg-elevated);
+    border-right: 1px solid var(--glass-border-color);
+    padding: var(--spacing-6);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  &__main {
+    flex: 1;
+    min-width: 0; // Prevent flex items from overflowing
+  }
+}

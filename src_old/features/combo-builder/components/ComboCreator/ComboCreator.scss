@@ -1,0 +1,156 @@
+// features/combo-builder/components/ComboCreator/ComboCreator.scss
+@import '../../../../styles/abstracts/variables';
+@import '../../../../styles/abstracts/mixins';
+
+.combo-creator {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: map-get($spacing, '4');
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: map-get($spacing, '6');
+  }
+
+  &__title {
+    @include text-style('2xl', 600);
+    color: var(--color-text-primary);
+  }
+
+  &__cancel-button {
+    padding: map-get($spacing, '2') map-get($spacing, '4');
+    background-color: map-get($colors, 'secondary');
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: darken(map-get($colors, 'secondary'), 10%);
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: map-get($spacing, '6');
+    margin-bottom: map-get($spacing, '6');
+
+    @include responsive('md') {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__move-list-container,
+  &__sequence-container {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: map-get($spacing, '4');
+  }
+
+  &__subtitle {
+    @include text-style('lg', 600);
+    color: var(--color-text-primary);
+    margin-bottom: map-get($spacing, '4');
+    padding-bottom: map-get($spacing, '2');
+    border-bottom: 1px solid var(--color-border);
+    @include flex(row, space-between, center);
+  }
+
+  &__damage-counter {
+    @include text-style('sm', 500);
+    color: white;
+    background-color: map-get($colors, 'info');
+    padding: map-get($spacing, '1') map-get($spacing, '2');
+    border-radius: 0.25rem;
+  }
+
+  &__form {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: map-get($spacing, '4');
+  }
+
+  &__form-group {
+    margin-bottom: map-get($spacing, '4');
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: map-get($spacing, '2');
+    @include text-style('sm', 500);
+    color: var(--color-text-primary);
+  }
+
+  &__input {
+    width: 100%;
+    padding: map-get($spacing, '2');
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    font-size: map-get($font-sizes, 'base');
+
+    &:focus {
+      outline: none;
+      border-color: map-get($colors, 'primary');
+      box-shadow: 0 0 0 2px rgba(map-get($colors, 'primary'), 0.2);
+    }
+  }
+
+  &__form-actions {
+    @include flex(row, flex-end, center);
+    gap: map-get($spacing, '3');
+  }
+
+  &__button {
+    padding: map-get($spacing, '2') map-get($spacing, '4');
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &--primary {
+      background-color: map-get($colors, 'primary');
+      color: white;
+
+      &:hover {
+        background-color: darken(map-get($colors, 'primary'), 10%);
+      }
+
+      &:disabled {
+        background-color: lighten(map-get($colors, 'primary'), 20%);
+        cursor: not-allowed;
+      }
+    }
+
+    &--secondary {
+      background-color: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+
+      &:hover {
+        background-color: darken(map-get($colors, 'secondary'), 10%);
+      }
+    }
+  }
+
+  &__loading,
+  &__error {
+    text-align: center;
+    padding: map-get($spacing, '8');
+  }
+
+  &__retry-button {
+    margin-top: map-get($spacing, '4');
+    padding: map-get($spacing, '2') map-get($spacing, '4');
+    background-color: map-get($colors, 'primary');
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+}

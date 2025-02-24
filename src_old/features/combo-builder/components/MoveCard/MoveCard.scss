@@ -1,0 +1,76 @@
+// features/combo-builder/components/MoveCard/MoveCard.scss
+@import '../../../../styles/abstracts/variables';
+@import '../../../../styles/abstracts/mixins';
+
+.move-card {
+  @include flex(row, space-between, center);
+  background-color: var(--color-bg-secondary);
+  border-radius: 0.25rem;
+  padding: map-get($spacing, '2');
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: map-get($spacing, '1');
+  }
+
+  &__name {
+    @include text-style('base', 600);
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  &__damage {
+    @include text-style('sm', 500);
+    background-color: map-get($colors, 'info');
+    color: white;
+    padding: map-get($spacing, '1') map-get($spacing, '2');
+    border-radius: 0.25rem;
+  }
+
+  &__input {
+    @include text-style('sm');
+    color: var(--color-text-secondary);
+    font-family: monospace;
+  }
+
+  &__button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    @include flex(row, center, center);
+    cursor: pointer;
+    margin-left: map-get($spacing, '2');
+    font-weight: bold;
+    font-size: map-get($font-sizes, 'lg');
+    transition: background-color 0.2s;
+
+    &--add {
+      background-color: map-get($colors, 'success');
+      color: white;
+
+      &:hover {
+        background-color: darken(map-get($colors, 'success'), 10%);
+      }
+    }
+
+    &--remove {
+      background-color: map-get($colors, 'error');
+      color: white;
+
+      &:hover {
+        background-color: darken(map-get($colors, 'error'), 10%);
+      }
+    }
+  }
+}

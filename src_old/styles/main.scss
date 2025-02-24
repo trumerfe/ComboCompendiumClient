@@ -1,0 +1,130 @@
+// styles/main.scss
+
+// Import abstracts
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
+@import 'abstracts/functions';
+
+// Import base styles
+@import 'base/reset';
+@import 'base/typography';
+@import 'base/grid';
+
+// Import themes
+@import 'themes/light';
+@import 'themes/dark';
+
+// Global styles
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  
+  // Add a subtle gradient background for better glassmorphism effect
+  &[data-theme="light"] {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+  
+  &[data-theme="dark"] {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+}
+
+// Global container
+.container {
+  width: 100%;
+  max-width: map-get($container-max-widths, 'xl');
+  margin: 0 auto;
+  @include padding-x('4');
+  
+  @include responsive('md') {
+    @include padding-x('6');
+  }
+  
+  @include responsive('lg') {
+    @include padding-x('8');
+  }
+}
+
+// Global card styles
+.card {
+  @include glassmorphism(0.25, 10px, 0.18);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.15);
+  }
+  
+  &__content {
+    @include card-padding;
+  }
+  
+  &__title {
+    @include margin-b('2');
+    @include text-style('lg', 600);
+  }
+  
+  &__image {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: map-get($radius, 'xl');
+    border-top-right-radius: map-get($radius, 'xl');
+  }
+}
+
+// Character grid styles for compact display
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: map-get($spacing, '4');
+  
+  @include responsive('md') {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  @include responsive('lg') {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  
+  &__item {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    border-radius: map-get($radius, 'lg');
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      z-index: map-get($z-layers, 'above');
+    }
+    
+    &--selected {
+      outline: map-get($border-widths, 'thick') solid var(--primary-color);
+    }
+  }
+  
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  &__name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    @include padding('2');
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    @include text-style('xs');
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

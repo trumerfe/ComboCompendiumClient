@@ -1,0 +1,26 @@
+// features/app/components/App/App.scss
+@import '../../../../styles/abstracts/variables';
+@import '../../../../styles/abstracts/mixins';
+
+.app {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg-primary);
+
+  &__header {
+    padding: map-get($spacing, '6');
+  }
+
+  &__title {
+    font-size: map-get($font-sizes, '2xl');
+    font-weight: bold;
+    color: var(--color-text-primary);
+    text-align: center;
+  }
+
+  &__main {
+    padding: map-get($spacing, '4');
+  }
+}

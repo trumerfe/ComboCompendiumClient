@@ -1,0 +1,59 @@
+// styles/abstracts/_functions.scss
+
+// Function to get spacing value
+@function spacing($key) {
+  @if map-has-key($spacing, $key) {
+    @return map-get($spacing, $key);
+  }
+  
+  @error "Unknown spacing `#{$key}`. Available spacings are: #{map-keys($spacing)}";
+}
+
+// Function to get color
+@function color($key) {
+  @if map-has-key($colors, $key) {
+    @return map-get($colors, $key);
+  }
+  
+  @error "Unknown color `#{$key}`. Available colors are: #{map-keys($colors)}";
+}
+
+// Function to get font size
+@function font-size($key) {
+  @if map-has-key($font-sizes, $key) {
+    @return map-get($font-sizes, $key);
+  }
+  
+  @error "Unknown font-size `#{$key}`. Available font sizes are: #{map-keys($font-sizes)}";
+}
+
+// Function to get z-index
+@function z-index($key) {
+  @if map-has-key($z-layers, $key) {
+    @return map-get($z-layers, $key);
+  }
+  
+  @error "Unknown z-index `#{$key}`. Available z-index values are: #{map-keys($z-layers)}";
+}
+
+// Function to get radius
+@function radius($key) {
+  @if map-has-key($radius, $key) {
+    @return map-get($radius, $key);
+  }
+  
+  @error "Unknown radius `#{$key}`. Available radius values are: #{map-keys($radius)}";
+}
+
+// BEM naming helper functions
+@function bem-element($block, $element) {
+  @return #{$block}__#{$element};
+}
+
+@function bem-modifier($block, $modifier) {
+  @return #{$block}--#{$modifier};
+}
+
+@function bem-element-modifier($block, $element, $modifier) {
+  @return #{$block}__#{$element}--#{$modifier};
+}

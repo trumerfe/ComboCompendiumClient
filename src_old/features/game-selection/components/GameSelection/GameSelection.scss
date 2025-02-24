@@ -1,0 +1,65 @@
+@import '../../../../styles/abstracts/shared';
+
+.game-selection {
+  padding: 2rem;
+
+  &__games,
+  &__characters,
+  &__combo-section {
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  &__grid {
+    display: grid;
+    gap: 1rem;
+    
+    @include responsive(sm) {
+      grid-template-columns: 1fr;
+    }
+
+    @include responsive(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include responsive(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__card {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    &--selected {
+      border-color: var(--primary-color);
+    }
+  }
+
+  &__card-title {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  &__combo-placeholder {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+}

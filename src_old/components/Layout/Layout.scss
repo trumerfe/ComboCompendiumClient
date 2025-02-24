@@ -1,0 +1,9 @@
+@import "../../styles/abstracts/shared";
+.layout {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  &__content {
+    padding: map-get($spacing, "6");
+  }
+}

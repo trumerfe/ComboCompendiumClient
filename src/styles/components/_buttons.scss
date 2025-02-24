@@ -1,0 +1,90 @@
+// src_new/styles/components/_buttons.scss
+@use '../abstracts/mixins' as mixins;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  
+  &__icon {
+    margin-right: var(--spacing-2);
+  }
+  
+  // Button variations
+  &--primary {
+    background-color: var(--color-primary);
+    color: white;
+    
+    &:hover {
+      background-color: var(--color-primary-dark);
+    }
+    
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+  
+  &--secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    
+    &:hover {
+      background-color: rgba(109, 40, 217, 0.1);
+    }
+  }
+  
+  &--accent-1 {
+    background-color: var(--color-accent-1);
+    color: white;
+    
+    &:hover {
+      filter: brightness(1.1);
+    }
+  }
+  
+  &--accent-2 {
+    background-color: var(--color-accent-2);
+    color: white;
+    
+    &:hover {
+      filter: brightness(1.1);
+    }
+  }
+  
+  &--glass {
+    @include mixins.glass-effect;
+    color: var(--color-text-primary);
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+  
+  &--large {
+    padding: var(--spacing-3) var(--spacing-6);
+    font-size: var(--text-lg);
+  }
+  
+  &--small {
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--text-sm);
+  }
+  
+  &--full {
+    width: 100%;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

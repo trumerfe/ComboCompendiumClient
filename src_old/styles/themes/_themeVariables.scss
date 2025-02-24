@@ -1,0 +1,54 @@
+// styles/themes/_themeVariables.scss
+// Base theme (light)
+:root {
+  // Background colors
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f3f4f6;
+  --color-bg-hover: rgba(0, 0, 0, 0.05);
+  --color-bg-active: rgba(0, 0, 0, 0.1);
+  --color-bg-subtle: #f3f4f6;
+
+  // Text colors
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-text-disabled: #d1d5db;
+  --color-text-inverse: #ffffff;
+
+  // Border colors
+  --color-border: #e5e7eb;
+  --color-border-hover: #d1d5db;
+  --color-border-active: #9ca3af;
+
+  // Sidebar specific
+  --sidebar-bg: #f3f4f6;  // Light gray for light theme
+  --sidebar-icon-color: var(--color-text-secondary);
+  --sidebar-hover: rgba(0, 0, 0, 0.1);
+}
+
+// Dark theme overrides
+:root[data-theme="dark"] {
+  // Background colors
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1f2937;
+  --color-bg-hover: rgba(255, 255, 255, 0.1);
+  --color-bg-active: rgba(255, 255, 255, 0.2);
+  --color-bg-subtle: #374151;
+
+  // Text colors
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #e5e7eb;
+  --color-text-tertiary: #9ca3af;
+  --color-text-disabled: #6b7280;
+  --color-text-inverse: #111827;
+
+  // Border colors
+  --color-border: #374151;
+  --color-border-hover: #4b5563;
+  --color-border-active: #6b7280;
+
+  // Sidebar specific
+  --sidebar-bg: #1f2937;  // Dark blue for dark theme
+  --sidebar-icon-color: #ffffff;
+  --sidebar-hover: rgba(255, 255, 255, 0.1);
+}

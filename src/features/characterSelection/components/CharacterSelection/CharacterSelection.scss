@@ -1,0 +1,84 @@
+// src/features/characterSelection/components/CharacterSelection/CharacterSelection.jsx
+.character-selection {
+  width: 100%;
+  
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-2);
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+  
+  &__filters {
+    margin-bottom: var(--spacing-4);
+    /* Filter styles will go here in the future */
+  }
+  
+  /* Loading state */
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-8);
+    
+    p {
+      margin-top: var(--spacing-4);
+      color: var(--color-text-secondary);
+    }
+  }
+  
+  &__spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  /* Error state */
+  &__error {
+    text-align: center;
+    padding: var(--spacing-8);
+    
+    h3 {
+      color: var(--color-error);
+      margin-bottom: var(--spacing-4);
+    }
+    
+    p {
+      margin-bottom: var(--spacing-6);
+      color: var(--color-text-secondary);
+    }
+  }
+  
+  /* Empty state */
+  &__empty, &__no-game {
+    text-align: center;
+    padding: var(--spacing-8);
+    
+    h3 {
+      margin-bottom: var(--spacing-4);
+    }
+    
+    p {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .character-selection__grid {
+    justify-content: space-around;
+  }
+}

@@ -1,0 +1,31 @@
+// src/features/gameSelection/pages/GameSelectionPage/GameSelectionPage.scss
+.game-selection-page {
+  min-height: 100vh;
+  
+  .page__header {
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+    
+    &-title {
+      font-size: var(--text-4xl);
+      margin-bottom: var(--spacing-4);
+      
+      @media (min-width: 768px) {
+        font-size: calc(var(--text-4xl) * 1.25);
+      }
+    }
+    
+    &-subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+  
+  .page__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+  }
+}

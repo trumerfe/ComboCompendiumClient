@@ -1,0 +1,175 @@
+// styles/abstracts/_mixins.scss
+@import 'flex-mixins';
+@import 'shadow-mixins';
+
+// Responsive design mixin
+@mixin responsive($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @error "Unknown breakpoint: #{$breakpoint}. Available breakpoints are: #{map-keys($breakpoints)}";
+  }
+}
+
+// Spacing mixins
+@mixin spacing($property, $size) {
+  @if map-has-key($spacing, $size) {
+    #{$property}: map-get($spacing, $size);
+  } @else {
+    @error "Unknown spacing size: #{$size}. Available spacing sizes are: #{map-keys($spacing)}";
+  }
+}
+
+// Multi-property spacing
+@mixin spacing-multi($properties, $size) {
+  @each $property in $properties {
+    @include spacing($property, $size);
+  }
+}
+
+// Margin shortcuts
+@mixin margin($size) {
+  @include spacing('margin', $size);
+}
+
+@mixin margin-x($size) {
+  @include spacing-multi(('margin-left', 'margin-right'), $size);
+}
+
+@mixin margin-y($size) {
+  @include spacing-multi(('margin-top', 'margin-bottom'), $size);
+}
+
+@mixin margin-t($size) {
+  @include spacing('margin-top', $size);
+}
+
+@mixin margin-r($size) {
+  @include spacing('margin-right', $size);
+}
+
+@mixin margin-b($size) {
+  @include spacing('margin-bottom', $size);
+}
+
+@mixin margin-l($size) {
+  @include spacing('margin-left', $size);
+}
+
+// Padding shortcuts
+@mixin padding($size) {
+  @include spacing('padding', $size);
+}
+
+@mixin padding-x($size) {
+  @include spacing-multi(('padding-left', 'padding-right'), $size);
+}
+
+@mixin padding-y($size) {
+  @include spacing-multi(('padding-top', 'padding-bottom'), $size);
+}
+
+@mixin padding-t($size) {
+  @include spacing('padding-top', $size);
+}
+
+@mixin padding-r($size) {
+  @include spacing('padding-right', $size);
+}
+
+@mixin padding-b($size) {
+  @include spacing('padding-bottom', $size);
+}
+
+@mixin padding-l($size) {
+  @include spacing('padding-left', $size);
+}
+
+// Responsive padding for page components
+@mixin page-padding {
+  padding: var(--padding-page);
+  
+  @include responsive('sm') {
+    padding: var(--padding-page-sm);
+  }
+  
+  @include responsive('xs') {
+    padding: var(--padding-page-xs);
+  }
+}
+
+// Card padding
+@mixin card-padding {
+  padding: var(--padding-card);
+}
+
+// Flexbox utilities
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+}
+
+// Grid utilities
+@mixin grid($columns: 1, $gap: '4') {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  
+  @if map-has-key($spacing, $gap) {
+    gap: map-get($spacing, $gap);
+  } @else {
+    gap: $gap;
+  }
+}
+
+// Responsive grid
+@mixin responsive-grid($sm: 1, $md: 2, $lg: 3, $xl: 4, $gap: '4') {
+  @include grid(1, $gap);
+  
+  @include responsive('sm') {
+    grid-template-columns: repeat($sm, 1fr);
+  }
+  
+  @include responsive('md') {
+    grid-template-columns: repeat($md, 1fr);
+  }
+  
+  @include responsive('lg') {
+    grid-template-columns: repeat($lg, 1fr);
+  }
+  
+  @include responsive('xl') {
+    grid-template-columns: repeat($xl, 1fr);
+  }
+}
+
+// Glassmorphism effect mixin
+@mixin glassmorphism($bg-opacity: 0.25, $blur: 10px, $border-opacity: 0.18) {
+  background: rgba(255, 255, 255, $bg-opacity);
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border-radius: map-get($radius, 'xl');
+  border: 1px solid rgba(255, 255, 255, $border-opacity);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  
+  [data-theme="dark"] & {
+    background: rgba(30, 30, 30, $bg-opacity);
+    border: 1px solid rgba(255, 255, 255, $border-opacity * 0.5);
+  }
+}
+
+// Typography
+@mixin text-style($size, $weight: normal, $line-height: 1.5) {
+  @if map-has-key($font-sizes, $size) {
+    font-size: map-get($font-sizes, $size);
+  } @else {
+    font-size: $size;
+  }
+  font-weight: $weight;
+  line-height: $line-height;
+}
+

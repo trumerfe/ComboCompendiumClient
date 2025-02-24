@@ -1,0 +1,171 @@
+// styles/abstracts/_flex-mixins.scss
+
+// Basic flex mixins
+@mixin flex {
+  display: flex;
+}
+
+@mixin flex-inline {
+  display: inline-flex;
+}
+
+// Direction modifiers
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin flex-row-reverse {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-reverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+// Justify-content variations
+@mixin flex-justify-start {
+  justify-content: flex-start;
+}
+
+@mixin flex-justify-end {
+  justify-content: flex-end;
+}
+
+@mixin flex-justify-center {
+  justify-content: center;
+}
+
+@mixin flex-justify-between {
+  justify-content: space-between;
+}
+
+@mixin flex-justify-around {
+  justify-content: space-around;
+}
+
+@mixin flex-justify-evenly {
+  justify-content: space-evenly;
+}
+
+// Align-items variations
+@mixin flex-items-start {
+  align-items: flex-start;
+}
+
+@mixin flex-items-end {
+  align-items: flex-end;
+}
+
+@mixin flex-items-center {
+  align-items: center;
+}
+
+@mixin flex-items-baseline {
+  align-items: baseline;
+}
+
+@mixin flex-items-stretch {
+  align-items: stretch;
+}
+
+// Wrap variations
+@mixin flex-wrap {
+  flex-wrap: wrap;
+}
+
+@mixin flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+@mixin flex-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+// Common flex combinations
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-between-start {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column-start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+@mixin flex-column-start-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@mixin flex-center-start {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@mixin flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+// Gap utility
+@mixin flex-gap($gap) {
+  gap: $gap;
+}
+
+// Flex item utilities
+@mixin flex-grow($grow: 1) {
+  flex-grow: $grow;
+}
+
+@mixin flex-shrink($shrink: 1) {
+  flex-shrink: $shrink;
+}
+
+@mixin flex-basis($basis) {
+  flex-basis: $basis;
+}
+
+@mixin flex-auto {
+  flex: 1 1 auto;
+}
+
+@mixin flex-none {
+  flex: none;
+}
+
+@mixin flex-1 {
+  flex: 1 1 0%;
+}
