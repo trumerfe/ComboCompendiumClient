@@ -232,7 +232,7 @@ export const getNotationDataForComboBuilder = async (gameId, characterId) => {
       id: character.id,
       name: character.name
     },
-    notationElements: game.notation.categories
+    categories: game.notation.categories // Make sure this matches your game JSON structure
   };
 };
 

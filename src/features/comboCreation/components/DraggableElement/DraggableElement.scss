@@ -11,7 +11,7 @@
   user-select: none;
   position: relative;
   transition: all var(--transition-fast);
-  overflow: hidden;
+  // overflow: hidden;
   
   &:hover {
     transform: translateY(-2px);

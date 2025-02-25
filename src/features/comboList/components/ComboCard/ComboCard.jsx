@@ -2,6 +2,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { likeCombo, dislikeCombo } from '../../store/comboListSlice';
+import NotationElement from '../../../../components/NotationElement';
 import './ComboCard.scss';
 
 const ComboCard = ({ combo, currentUserId = 'user123' }) => {
@@ -78,22 +79,13 @@ const ComboCard = ({ combo, currentUserId = 'user123' }) => {
       </div>
       
       <div className="combo-card__notation">
-        {Array.isArray(expandedNotation) && expandedNotation.map((element, index) => {
-          // Ensure element is valid
-          if (!element || !element.categoryId) {
-            return null;
-          }
-          
-          return (
-            <span 
-              key={`${element.categoryId}-${element.elementId || 'unknown'}-${index}`}
-              className={`combo-card__notation-element combo-card__notation-element--${element.categoryId}`}
-              title={element.description || ''}
-            >
-              {element.display || '?'}
-            </span>
-          );
-        })}
+        {Array.isArray(expandedNotation) && expandedNotation.map((element, index) => (
+          <NotationElement 
+            key={`notation-element-${index}`}
+            element={element}
+            className="combo-card__notation-element"
+          />
+        ))}
       </div>
       
       <div className="combo-card__footer">

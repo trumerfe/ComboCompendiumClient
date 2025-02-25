@@ -1,7 +1,31 @@
+// src/features/comboBuilder/components/ComboCanvas/ComboCanvas.jsx
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { FaTimes } from 'react-icons/fa';
+import NotationElement from '../../../../components/NotationElement';
+// If the path is different in your project, adjust the import accordingly
 import './ComboCanvas.scss';
+
+// Component for a canvas element with remove button
+const CanvasElement = ({ element, index, onRemove }) => {
+  return (
+    <div className="combo-canvas__element-wrapper">
+      <div className="combo-canvas__element">
+        <NotationElement 
+          element={element}
+          className="combo-canvas__notation-element"
+        />
+        <button 
+          className="combo-canvas__element-remove" 
+          onClick={() => onRemove(index)}
+          title="Remove element"
+        >
+          <FaTimes size={10} />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const ComboCanvas = ({ 
   sequence, 
@@ -20,54 +44,6 @@ const ComboCanvas = ({
     })
   }), [onDropElement]);
 
-  // Helper function to render each element in the sequence
-  const renderSequenceElement = (element, index) => {
-    // Determine how to display the element
-    const renderElementContent = () => {
-      // If there's an image URL, show the image
-      if (element.imageUrl) {
-        return (
-          <img 
-            src={element.imageUrl} 
-            alt={element.name} 
-            className="combo-canvas__element-image"
-            onError={(e) => {
-              e.target.onerror = null; 
-              e.target.classList.add('combo-canvas__element-image--error');
-              e.target.parentNode.classList.add('combo-canvas__element--fallback');
-            }}
-          />
-        );
-      }
-      
-      // If there's a symbol, show that
-      if (element.symbol) {
-        return <span className="combo-canvas__element-symbol">{element.symbol}</span>;
-      }
-      
-      // Fallback to the name or ID
-      const displayText = element.name || element.id;
-      return <span className="combo-canvas__element-name">{displayText}</span>;
-    };
-    
-    // Add a small indicator of the element's category for debugging/clarity
-    const categoryClass = `combo-canvas__element--${element.categoryId}`;
-
-    return (
-      <div key={`${element.id}-${index}`} className="combo-canvas__element-wrapper">
-        <div className={`combo-canvas__element ${categoryClass}`}>
-          {renderElementContent()}
-          <button 
-            className="combo-canvas__element-remove" 
-            onClick={() => onRemoveElement(index)}
-          >
-            <FaTimes size={10} />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div 
       ref={drop}
@@ -80,7 +56,14 @@ const ComboCanvas = ({
         </div>
       ) : (
         <div className="combo-canvas__sequence">
-          {sequence.map(renderSequenceElement)}
+          {sequence.map((element, index) => (
+            <CanvasElement 
+              key={`${element.id || element.elementId || ''}-${index}`}
+              element={element}
+              index={index}
+              onRemove={onRemoveElement}
+            />
+          ))}
           {isDragging && (
             <div className="combo-canvas__drop-indicator">
               <span>+</span>

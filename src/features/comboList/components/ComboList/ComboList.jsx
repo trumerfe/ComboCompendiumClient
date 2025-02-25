@@ -15,6 +15,8 @@ const ComboList = ({ status, error, onRetry, currentUserId }) => {
   // Use provided status or get from store
   const currentStatus = status || listStatus;
 
+  console.log(combos)
+
   // Handle loading state
   if (currentStatus === 'loading') {
     return (
