@@ -11,6 +11,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { GameSelectionPage } from "./features/gameSelection";
 import { CharacterSelectionPage } from "./features/characterSelection";
 import { ComboListPage } from "./features/comboList";
+import { ComboCreationPage } from "./features/comboCreation"
 
 // Error Fallback component
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
@@ -51,7 +52,8 @@ const App = () => {
               {/* Combo List */}
               <Route path="/games/:gameId/characters/:characterId/combos" element={<ComboListPage />} />
 
-              <Route path="/games/:gameId/characters/:characterId/create-combo" element={<div>Combo Creation Page (Coming Soon)</div>} />
+              {/* New Combo Creation Route */}
+              <Route path="/games/:gameId/characters/:characterId/combos/create" element={<ComboCreationPage />} />
 
               {/* 404 Page */}
               <Route

@@ -125,16 +125,38 @@ export const getExpandedCombo = async (comboId) => {
 // Create a new combo
 export const createCombo = async (comboData) => {
   await delay();
-  // In a real API, this would add the combo to the database
-  // For mock data, we just return the combo with an ID
+  
+  // Validate required fields
+  if (!comboData.gameId || !comboData.characterId || !comboData.name || !comboData.notation || comboData.notation.length === 0) {
+    throw new Error('Missing required combo fields');
+  }
+  
+  // Generate an ID for the new combo
+  const newId = `combo${Date.now()}`;
+  
+  // Create the new combo object
   const newCombo = {
-    id: `combo_${Date.now()}`,
-    createdAt: new Date().toISOString(),
+    id: newId,
+    characterId: comboData.characterId,
+    gameId: comboData.gameId,
+    name: comboData.name,
+    notation: comboData.notation,
+    damage: comboData.damage || 0,
+    difficulty: comboData.difficulty || 'medium',
+    tags: comboData.tags || [],
+    description: comboData.description || '',
+    video: comboData.video || '',
+    createdBy: comboData.createdBy || 'user123', // Default user if not provided
+    createdAt: comboData.createdAt || new Date().toISOString(),
     likes: 0,
-    dislikes: 0,
-    ...comboData
+    dislikes: 0
   };
-  return newCombo;
+  
+  // In a real implementation, this would call an API
+  // For now, we'll simulate adding it to the mock data
+  combos.combos.unshift(newCombo);
+  
+  return { ...newCombo };
 };
 
 // Like/dislike a combo

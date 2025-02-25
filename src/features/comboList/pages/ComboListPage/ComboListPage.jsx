@@ -1,7 +1,8 @@
 // src/features/comboList/pages/ComboListPage/ComboListPage.jsx
 import React from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { FaArrowLeft, FaPlus } from 'react-icons/fa';
 import ComboList from '../../components/ComboList';
 import { useComboList } from '../../hooks/useComboList';
 import { toggleSortDirection, selectSortDirection } from '../../store/comboListSlice';
@@ -9,6 +10,7 @@ import './ComboListPage.scss';
 
 const ComboListPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // Get character and game IDs from URL params
   const { characterId, gameId } = useParams();
   const sortDirection = useSelector(selectSortDirection);
@@ -21,13 +23,17 @@ const ComboListPage = () => {
     selectedCharacter,
     selectedGame,
     loadCombos,
-    navigateToComboCreation,
     navigateToCharacterSelection
   } = useComboList(characterId);
   
   // Toggle sort direction handler
   const handleToggleSortDirection = () => {
     dispatch(toggleSortDirection());
+  };
+  
+  // Handler for Create Combo button
+  const handleCreateCombo = () => {
+    navigate(`/games/${gameId}/characters/${characterId}/combos/create`);
   };
   
   // If there's no selected character or game, redirect to the appropriate page
@@ -50,18 +56,18 @@ const ComboListPage = () => {
         
         <div className="combo-list-page__info">
           <h1 className="combo-list-page__title">
-            {characterId || 'Character'} Combos
+            {selectedCharacter?.name || characterId} Combos
           </h1>
           <p className="combo-list-page__subtitle">
-            {gameId || 'Game'}
+            {selectedGame?.name || gameId}
           </p>
         </div>
         
         <button 
           className="combo-list-page__create-button"
-          onClick={navigateToComboCreation}
+          onClick={handleCreateCombo}
         >
-          Create Combo
+          <FaPlus /> Create Combo
         </button>
       </header>
       

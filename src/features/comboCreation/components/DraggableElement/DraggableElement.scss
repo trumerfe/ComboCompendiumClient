@@ -1,0 +1,53 @@
+.draggable-element {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--glass-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  position: relative;
+  transition: all var(--transition-fast);
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-color: var(--color-primary-light);
+  }
+  
+  &--dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+  
+  &--fallback {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  &__image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    
+    &--error {
+      display: none;
+    }
+  }
+  
+  &__symbol {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-text-primary);
+  }
+  
+  &__name {
+    font-size: var(--text-xs);
+    text-align: center;
+    padding: var(--spacing-1);
+    color: var(--color-text-primary);
+  }
+}
