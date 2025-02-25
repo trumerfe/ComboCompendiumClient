@@ -1,70 +1,32 @@
 // src/features/gameSelection/store/gameSelectionSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getGames, getGameById } from '../../../services/mockDataService';
 
-// Sample game data - to be replaced with API call later
-const gamesData = [
-  {
-    id: 1,
-    name: "Street Fighter 6",
-    imageUrl: "/images/games/sf6.jpg",
-    developer: "Capcom",
-    releaseYear: 2023,
-    platform: "Multi-platform"
-  },
-  {
-    id: 2,
-    name: "Tekken 8",
-    imageUrl: "/images/games/tekken8.jpg",
-    developer: "Bandai Namco",
-    releaseYear: 2023,
-    platform: "Multi-platform"
-  },
-  {
-    id: 3,
-    name: "Guilty Gear Strive",
-    imageUrl: "/images/games/ggstrive.jpg",
-    developer: "Arc System Works",
-    releaseYear: 2021,
-    platform: "Multi-platform"
-  },
-  {
-    id: 4,
-    name: "Mortal Kombat 1",
-    imageUrl: "/images/games/mk1.jpg",
-    developer: "NetherRealm Studios",
-    releaseYear: 2023,
-    platform: "Multi-platform"
-  },
-  {
-    id: 5,
-    name: "King of Fighters XV",
-    imageUrl: "/images/games/kof15.jpg",
-    developer: "SNK",
-    releaseYear: 2022,
-    platform: "Multi-platform"
-  },
-  {
-    id: 6,
-    name: "Dragon Ball FighterZ",
-    imageUrl: "/images/games/dbfz.jpg",
-    developer: "Arc System Works",
-    releaseYear: 2018,
-    platform: "Multi-platform"
-  }
-];
-
-// Async thunk to simulate fetching games from an API
+// Async thunk to fetch games from the mock data service
 export const fetchGames = createAsyncThunk(
   'gameSelection/fetchGames',
   async (_, { rejectWithValue }) => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // This will be replaced with actual API call in the future
-      return gamesData;
+      const games = await getGames();
+      return games;
     } catch (error) {
-      return rejectWithValue('Failed to fetch games. Please try again.');
+      return rejectWithValue(error.message || 'Failed to fetch games. Please try again.');
+    }
+  }
+);
+
+// Async thunk to fetch a specific game by ID
+export const fetchGameById = createAsyncThunk(
+  'gameSelection/fetchGameById',
+  async (gameId, { rejectWithValue }) => {
+    try {
+      const game = await getGameById(gameId);
+      if (!game) {
+        throw new Error(`Game with ID ${gameId} not found`);
+      }
+      return game;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to fetch game details');
     }
   }
 );
@@ -89,12 +51,17 @@ const gameSelectionSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
       state.status = 'failed';
+    },
+    clearError: (state) => {
+      state.error = null;
     }
   },
   extraReducers: (builder) => {
     builder
+      // Fetch games cases
       .addCase(fetchGames.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(fetchGames.fulfilled, (state, action) => {
         state.status = 'succeeded';
@@ -104,12 +71,27 @@ const gameSelectionSlice = createSlice({
       .addCase(fetchGames.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || 'Something went wrong';
+      })
+      
+      // Fetch game by id cases
+      .addCase(fetchGameById.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchGameById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.selectedGame = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchGameById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload || 'Failed to fetch game details';
       });
   }
 });
 
 // Export actions
-export const { selectGame, clearSelectedGame, setError } = gameSelectionSlice.actions;
+export const { selectGame, clearSelectedGame, setError, clearError } = gameSelectionSlice.actions;
 
 // Selectors
 export const selectGamesState = state => state.gameSelection;

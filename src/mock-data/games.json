@@ -1,0 +1,97 @@
+{
+  "games": [
+    {
+      "id": "sf6",
+      "name": "Street Fighter 6",
+      "imageUrl": "/images/games/sf6.jpg",
+      "developer": "Capcom",
+      "releaseYear": 2023,
+      "platform": ["PS5", "Xbox Series X", "PC"],
+      "description": "The newest installment in the Street Fighter series...",
+      "notation": {
+        "categories": {
+          "buttons": [
+            { "id": "LP", "name": "Light Punch", "symbol": "LP", "imageUrl": "/images/notation/sf6/LP.png" },
+            { "id": "MP", "name": "Medium Punch", "symbol": "MP", "imageUrl": "/images/notation/sf6/MP.png" },
+            { "id": "HP", "name": "Heavy Punch", "symbol": "HP", "imageUrl": "/images/notation/sf6/HP.png" },
+            { "id": "LK", "name": "Light Kick", "symbol": "LK", "imageUrl": "/images/notation/sf6/LK.png" },
+            { "id": "MK", "name": "Medium Kick", "symbol": "MK", "imageUrl": "/images/notation/sf6/MK.png" },
+            { "id": "HK", "name": "Heavy Kick", "symbol": "HK", "imageUrl": "/images/notation/sf6/HK.png" }
+          ],
+          "directions": [
+            { "id": "up", "name": "Up", "symbol": "↑", "imageUrl": "/images/notation/sf6/up.png" },
+            { "id": "down", "name": "Down", "symbol": "↓", "imageUrl": "/images/notation/sf6/down.png" },
+            { "id": "left", "name": "Left", "symbol": "←", "imageUrl": "/images/notation/sf6/left.png" },
+            { "id": "right", "name": "Right", "symbol": "→", "imageUrl": "/images/notation/sf6/right.png" },
+            { "id": "upright", "name": "Up-Right", "symbol": "↗", "imageUrl": "/images/notation/sf6/upright.png" },
+            { "id": "upleft", "name": "Up-Left", "symbol": "↖", "imageUrl": "/images/notation/sf6/upleft.png" },
+            { "id": "downright", "name": "Down-Right", "symbol": "↘", "imageUrl": "/images/notation/sf6/downright.png" },
+            { "id": "downleft", "name": "Down-Left", "symbol": "↙", "imageUrl": "/images/notation/sf6/downleft.png" }
+          ],
+          "modifiers": [
+            { "id": "plus", "name": "Plus", "symbol": "+", "imageUrl": "/images/notation/sf6/plus.png" },
+            { "id": "link", "name": "Link", "symbol": ">", "imageUrl": "/images/notation/sf6/link.png" },
+            { "id": "cancel", "name": "Cancel", "symbol": "XX", "imageUrl": "/images/notation/sf6/cancel.png" },
+            { "id": "hold", "name": "Hold", "symbol": "[hold]", "imageUrl": "/images/notation/sf6/hold.png" },
+            { "id": "release", "name": "Release", "symbol": "[release]", "imageUrl": "/images/notation/sf6/release.png" }
+          ],
+          "motions": [
+            { "id": "qcf", "name": "Quarter Circle Forward", "symbol": "↓↘→", "imageUrl": "/images/notation/sf6/qcf.png" },
+            { "id": "qcb", "name": "Quarter Circle Back", "symbol": "↓↙←", "imageUrl": "/images/notation/sf6/qcb.png" },
+            { "id": "dp", "name": "Dragon Punch", "symbol": "→↓↘", "imageUrl": "/images/notation/sf6/dp.png" },
+            { "id": "rdp", "name": "Reverse Dragon Punch", "symbol": "←↓↙", "imageUrl": "/images/notation/sf6/rdp.png" },
+            { "id": "hcf", "name": "Half Circle Forward", "symbol": "←↙↓↘→", "imageUrl": "/images/notation/sf6/hcf.png" },
+            { "id": "hcb", "name": "Half Circle Back", "symbol": "→↘↓↙←", "imageUrl": "/images/notation/sf6/hcb.png" }
+          ],
+          "text": [
+            { "id": "cr", "name": "Crouching", "symbol": "cr.", "imageUrl": null },
+            { "id": "st", "name": "Standing", "symbol": "st.", "imageUrl": null },
+            { "id": "j", "name": "Jumping", "symbol": "j.", "imageUrl": null },
+            { "id": "OD", "name": "Overdrive", "symbol": "OD", "imageUrl": null }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tekken8",
+      "name": "Tekken 8",
+      "imageUrl": "/images/games/tekken8.jpg",
+      "developer": "Bandai Namco",
+      "releaseYear": 2023,
+      "platform": ["PS5", "Xbox Series X", "PC"],
+      "description": "The latest entry in the Tekken franchise...",
+      "notation": {
+        "categories": {
+          "buttons": [
+            { "id": "1", "name": "Left Punch", "symbol": "1", "imageUrl": "/images/notation/tekken8/1.png" },
+            { "id": "2", "name": "Right Punch", "symbol": "2", "imageUrl": "/images/notation/tekken8/2.png" },
+            { "id": "3", "name": "Left Kick", "symbol": "3", "imageUrl": "/images/notation/tekken8/3.png" },
+            { "id": "4", "name": "Right Kick", "symbol": "4", "imageUrl": "/images/notation/tekken8/4.png" }
+          ],
+          "directions": [
+            { "id": "u", "name": "Up", "symbol": "u", "imageUrl": "/images/notation/tekken8/u.png" },
+            { "id": "d", "name": "Down", "symbol": "d", "imageUrl": "/images/notation/tekken8/d.png" },
+            { "id": "b", "name": "Back", "symbol": "b", "imageUrl": "/images/notation/tekken8/b.png" },
+            { "id": "f", "name": "Forward", "symbol": "f", "imageUrl": "/images/notation/tekken8/f.png" },
+            { "id": "uf", "name": "Up-Forward", "symbol": "u/f", "imageUrl": "/images/notation/tekken8/uf.png" },
+            { "id": "ub", "name": "Up-Back", "symbol": "u/b", "imageUrl": "/images/notation/tekken8/ub.png" },
+            { "id": "df", "name": "Down-Forward", "symbol": "d/f", "imageUrl": "/images/notation/tekken8/df.png" },
+            { "id": "db", "name": "Down-Back", "symbol": "d/b", "imageUrl": "/images/notation/tekken8/db.png" }
+          ],
+          "modifiers": [
+            { "id": "plus", "name": "Plus", "symbol": "+", "imageUrl": "/images/notation/tekken8/plus.png" },
+            { "id": "comma", "name": "Comma", "symbol": ",", "imageUrl": "/images/notation/tekken8/comma.png" },
+            { "id": "tilde", "name": "Into", "symbol": "~", "imageUrl": "/images/notation/tekken8/tilde.png" },
+            { "id": "hold", "name": "Hold", "symbol": "(hold)", "imageUrl": "/images/notation/tekken8/hold.png" }
+          ],
+          "text": [
+            { "id": "WS", "name": "While Standing", "symbol": "WS", "imageUrl": null },
+            { "id": "FC", "name": "Full Crouch", "symbol": "FC", "imageUrl": null },
+            { "id": "CH", "name": "Counter Hit", "symbol": "CH", "imageUrl": null },
+            { "id": "SS", "name": "Sidestep", "symbol": "SS", "imageUrl": null }
+          ]
+        }
+      }
+    }
+  ]
+}

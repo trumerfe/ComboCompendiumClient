@@ -1,0 +1,50 @@
+{
+  "combos": [
+    {
+      "id": "combo1",
+      "characterId": "ryu",
+      "gameId": "sf6",
+      "name": "Basic BnB",
+      "description": "A basic bread and butter combo that works midscreen",
+      "notation": [
+        { "categoryId": "text", "elementId": "cr" },
+        { "categoryId": "buttons", "elementId": "MP" },
+        { "categoryId": "modifiers", "elementId": "link" },
+        { "categoryId": "motions", "elementId": "qcf" },
+        { "categoryId": "buttons", "elementId": "LP" }
+      ],
+      "damage": 120,
+      "difficulty": "easy",
+      "video": "https://youtu.be/example1",
+      "createdBy": "user123",
+      "createdAt": "2023-05-15T14:30:00Z",
+      "likes": 42,
+      "dislikes": 3
+    },
+    {
+      "id": "combo2",
+      "characterId": "kazuya",
+      "gameId": "tekken8",
+      "name": "Basic Combo",
+      "description": "Simple combo starting with df+2",
+      "notation": [
+        { "categoryId": "directions", "elementId": "df" },
+        { "categoryId": "modifiers", "elementId": "plus" },
+        { "categoryId": "buttons", "elementId": "2" },
+        { "categoryId": "modifiers", "elementId": "comma" },
+        { "categoryId": "buttons", "elementId": "4" },
+        { "categoryId": "modifiers", "elementId": "comma" },
+        { "categoryId": "buttons", "elementId": "4" },
+        { "categoryId": "modifiers", "elementId": "comma" },
+        { "categoryId": "buttons", "elementId": "4" }
+      ],
+      "damage": 68,
+      "difficulty": "medium",
+      "video": "https://youtu.be/example2",
+      "createdBy": "user456",
+      "createdAt": "2023-06-22T09:15:00Z",
+      "likes": 28,
+      "dislikes": 2
+    }
+  ]
+}

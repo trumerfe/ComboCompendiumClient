@@ -1,0 +1,31 @@
+{
+  "characters": [
+    {
+      "id": "ryu",
+      "gameId": "sf6",
+      "name": "Ryu",
+      "imageUrl": "/images/characters/sf6/ryu.jpg",
+      "difficulty": "medium",
+      "archetype": "Shoto",
+      "description": "The wandering warrior seeking mastery of his craft."
+    },
+    {
+      "id": "ken",
+      "gameId": "sf6",
+      "name": "Ken",
+      "imageUrl": "/images/characters/sf6/ken.jpg",
+      "difficulty": "medium",
+      "archetype": "Shoto",
+      "description": "Ryu's rival and former US fighting champion."
+    },
+    {
+      "id": "kazuya",
+      "gameId": "tekken8",
+      "name": "Kazuya Mishima",
+      "imageUrl": "/images/characters/tekken8/kazuya.jpg",
+      "difficulty": "hard",
+      "archetype": "Mishima",
+      "description": "The devil-powered head of the Mishima Zaibatsu."
+    }
+  ]
+}

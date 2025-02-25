@@ -1,79 +1,105 @@
-// src/features/gameSelection/hooks/useCharacterSelection.js
+// src/features/characterSelection/hooks/useCharacterSelection.js
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { 
-  fetchCharacters, 
+  fetchCharactersByGameId, 
+  fetchCharacterById,
+  selectCharacter, 
+  clearSelectedCharacter,
+  clearCharacters,
   selectCharacters, 
   selectSelectedCharacter, 
   selectCharactersStatus, 
   selectCharactersError,
-  selectCharacter,
-  clearCharacters,
-  setError
+  clearError
 } from '../store/characterSelectionSlice';
 import { selectSelectedGame } from '../../gameSelection/store/gameSelectionSlice';
 
-export const useCharacterSelection = () => {
+/**
+ * Custom hook for character selection functionality
+ * Provides access to character data and related actions
+ * 
+ * @param {string} gameId - Optional game ID to load characters for
+ */
+const useCharacterSelection = (gameId = null) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Get data from Redux store
+  // Select data from Redux store
   const characters = useSelector(selectCharacters);
   const selectedCharacter = useSelector(selectSelectedCharacter);
   const status = useSelector(selectCharactersStatus);
   const error = useSelector(selectCharactersError);
   const selectedGame = useSelector(selectSelectedGame);
-
-  // Load characters based on the selected game
+  
+  // Load characters for the specified game ID or from the selected game in state
   useEffect(() => {
-    if (selectedGame && characters.length === 0 && status === 'idle') {
-      dispatch(fetchCharacters(selectedGame.id));
+    const targetGameId = gameId || (selectedGame && selectedGame.id);
+    
+    if (targetGameId && characters.length === 0 && status === 'idle') {
+      dispatch(fetchCharactersByGameId(targetGameId));
     }
-  }, [selectedGame, characters.length, status, dispatch]);
+  }, [dispatch, gameId, selectedGame, characters.length, status]);
 
-  // Handle character selection
+  // Select a character and navigate to combos page
   const handleSelectCharacter = useCallback((character) => {
     dispatch(selectCharacter(character));
     
-    // Navigate to the combo list page for this character
-    navigate(`/games/${character.gameId}/characters/${character.id}/combos`);
-    
-    // Show toast notification
-    toast.success(`Selected ${character.name}`);
-  }, [dispatch, navigate]);
-
-  // Reload characters
-  const reloadCharacters = useCallback(() => {
-    if (selectedGame) {
-      dispatch(fetchCharacters(selectedGame.id));
-    } else {
-      toast.error('No game selected');
+    // Navigate to the character's combo page
+    const targetGameId = gameId || (selectedGame && selectedGame.id);
+    if (targetGameId) {
+      navigate(`/games/${targetGameId}/characters/${character.id}/combos`);
     }
-  }, [selectedGame, dispatch]);
+  }, [dispatch, navigate, gameId, selectedGame]);
 
-  // Clear characters when component unmounts or when manually triggered
-  const handleClearCharacters = useCallback(() => {
+  // Load a specific character by ID
+  const loadCharacterById = useCallback((characterId) => {
+    dispatch(fetchCharacterById(characterId));
+  }, [dispatch]);
+
+  // Clear character selection
+  const clearCharacter = useCallback(() => {
+    dispatch(clearSelectedCharacter());
+  }, [dispatch]);
+
+  // Clear all character data
+  const resetCharacters = useCallback(() => {
     dispatch(clearCharacters());
   }, [dispatch]);
 
-  // Go back to game selection
-  const goBackToGameSelection = useCallback(() => {
-    navigate('/games');
-  }, [navigate]);
+  // Load characters for a specific game (useful when changing games)
+  const loadCharactersForGame = useCallback((targetGameId) => {
+    if (targetGameId) {
+      dispatch(clearCharacters());
+      dispatch(fetchCharactersByGameId(targetGameId));
+    }
+  }, [dispatch]);
+
+  // Reload characters (useful for retrying after an error)
+  const reloadCharacters = useCallback(() => {
+    const targetGameId = gameId || (selectedGame && selectedGame.id);
+    if (targetGameId) {
+      dispatch(clearError());
+      dispatch(fetchCharactersByGameId(targetGameId));
+    }
+  }, [dispatch, gameId, selectedGame]);
 
   return {
+    // State
     characters,
     selectedCharacter,
-    isLoading: status === 'loading',
-    hasError: status === 'failed',
+    status,
     error,
-    selectedGame,
+    isLoading: status === 'loading',
+    
+    // Actions
     selectCharacter: handleSelectCharacter,
-    reloadCharacters,
-    clearCharacters: handleClearCharacters,
-    goBackToGameSelection
+    loadCharacterById,
+    clearCharacter,
+    resetCharacters,
+    loadCharactersForGame,
+    reloadCharacters
   };
 };
 

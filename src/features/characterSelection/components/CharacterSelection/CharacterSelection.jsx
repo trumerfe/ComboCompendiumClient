@@ -2,19 +2,25 @@
 import React from 'react';
 import CharacterCard from '../CharacterCard';
 import useCharacterSelection from '../../hooks/useCharacterSelection';
+import { useParams } from 'react-router-dom';
 import './CharacterSelection.scss';
 
 const CharacterSelection = () => {
+  // Get gameId from URL params if available
+  const { gameId } = useParams();
+  
   const {
     characters,
     selectedCharacter,
-    isLoading,
-    hasError,
+    status,
     error,
     selectCharacter,
-    reloadCharacters,
-    selectedGame,
-  } = useCharacterSelection();
+    reloadCharacters
+  } = useCharacterSelection(gameId);
+
+  // Calculate derived state
+  const isLoading = status === 'loading';
+  const hasError = status === 'failed';
 
   // Loading state
   if (isLoading) {
@@ -42,22 +48,12 @@ const CharacterSelection = () => {
     );
   }
 
-  // No game selected state
-  if (!selectedGame) {
-    return (
-      <div className="character-selection__no-game">
-        <h3>No Game Selected</h3>
-        <p>Please select a game first to view its characters</p>
-      </div>
-    );
-  }
-
   // Empty state
   if (characters.length === 0) {
     return (
       <div className="character-selection__empty">
         <h3>No Characters Found</h3>
-        <p>No characters are available for {selectedGame.name}</p>
+        <p>No characters are available for this game</p>
       </div>
     );
   }

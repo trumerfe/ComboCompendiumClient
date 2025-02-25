@@ -2,64 +2,87 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { 
+  fetchGames, 
+  fetchGameById,
+  selectGame as selectGameAction, 
+  clearSelectedGame,
   selectGames, 
   selectSelectedGame, 
   selectGamesStatus, 
   selectGamesError,
-  selectGame,
-  fetchGames,
-  setError
+  clearError
 } from '../store/gameSelectionSlice';
 import { clearCharacters } from '../../characterSelection/store/characterSelectionSlice';
 
+/**
+ * Custom hook for game selection functionality
+ * Provides access to game data and related actions
+ */
 export const useGameSelection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Get data from Redux store
+  // Select data from Redux store
   const games = useSelector(selectGames);
   const selectedGame = useSelector(selectSelectedGame);
   const status = useSelector(selectGamesStatus);
   const error = useSelector(selectGamesError);
-
-  // Load games on component mount if they're not already loaded
+  
+  // Load games on mount if not already loaded
   useEffect(() => {
     if (games.length === 0 && status === 'idle') {
       dispatch(fetchGames());
     }
-  }, [games.length, status, dispatch]);
+  }, [dispatch, games.length, status]);
 
-  // Handle game selection
+  // Select a game and navigate to characters page
   const handleSelectGame = useCallback((game) => {
-    // First clear any existing character selection data
+    console.log('Game selected:', game);
+    
+    // Clear previous character state before selecting a new game
     dispatch(clearCharacters());
     
-    // Then set the selected game
-    dispatch(selectGame(game));
+    // Set the selected game in Redux
+    dispatch(selectGameAction(game));
     
-    // Navigate to the character selection page
-    navigate(`/games/${game.id}/characters`);
-    
-    // Show toast notification
-    toast.success(`Selected ${game.name}`);
+    // Use the correct route path matching your App.jsx
+    const path = `/games/${game.id}/characters`;
+    console.log('Navigating to:', path);
+    navigate(path);
   }, [dispatch, navigate]);
 
-  // Reload games
+  // Load a specific game by ID
+  const loadGameById = useCallback((gameId) => {
+    dispatch(fetchGameById(gameId));
+  }, [dispatch]);
+
+  // Clear game selection
+  const clearGame = useCallback(() => {
+    dispatch(clearSelectedGame());
+  }, [dispatch]);
+
+  // Reload games (useful for retrying after an error)
   const reloadGames = useCallback(() => {
+    dispatch(clearError());
     dispatch(fetchGames());
   }, [dispatch]);
 
   return {
+    // State
     games,
     selectedGame,
-    isLoading: status === 'loading',
-    hasError: status === 'failed',
+    status,
     error,
+    isLoading: status === 'loading',
+    
+    // Actions
     selectGame: handleSelectGame,
+    loadGameById,
+    clearGame,
     reloadGames
   };
 };
 
+// Add this line to maintain backward compatibility with default imports
 export default useGameSelection;

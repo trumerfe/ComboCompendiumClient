@@ -1,8 +1,7 @@
-// src/features/gameSelection/pages/GameSelectionPage/GameSelectionPage.scss
 .game-selection-page {
   min-height: 100vh;
   
-  .page__header {
+  &__header {
     text-align: center;
     margin-bottom: var(--spacing-12);
     
@@ -23,9 +22,18 @@
     }
   }
   
-  .page__content {
+  .game-selection {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-6);
   }
+}
+
+/* Add this for the text gradient effect */
+.text-gradient {
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent-1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }

@@ -1,18 +1,22 @@
 // src/features/gameSelection/components/GameSelection/GameSelection.jsx
 import React from 'react';
 import GameCard from '../GameCard';
-import { useGameSelection } from '../../hooks/useGameSelection';
+import useGameSelection from '../../hooks/useGameSelection';
 import './GameSelection.scss';
 
 const GameSelection = () => {
   const { 
     games, 
     selectedGame, 
-    isLoading, 
+    status, 
     error, 
     selectGame, 
-    refreshGames 
+    reloadGames 
   } = useGameSelection();
+
+  // Calculate derived state
+  const isLoading = status === 'loading';
+  const hasError = status === 'failed';
 
   // Loading state
   if (isLoading && games.length === 0) {
@@ -25,13 +29,14 @@ const GameSelection = () => {
   }
 
   // Error state
-  if (error && games.length === 0) {
+  if (hasError && games.length === 0) {
     return (
       <div className="game-selection__error">
+        <h3>Error Loading Games</h3>
         <p>{error}</p>
         <button 
           className="button button--primary mt-4"
-          onClick={refreshGames}
+          onClick={reloadGames}
         >
           Try Again
         </button>
@@ -43,10 +48,11 @@ const GameSelection = () => {
   if (!isLoading && games.length === 0) {
     return (
       <div className="game-selection__empty">
-        <p>No games found.</p>
+        <h3>No Games Found</h3>
+        <p>No games are available.</p>
         <button 
           className="button button--primary mt-4"
-          onClick={refreshGames}
+          onClick={reloadGames}
         >
           Refresh
         </button>

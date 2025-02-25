@@ -13,7 +13,7 @@ export {
   default as characterSelectionReducer,
   selectCharacter,
   clearSelectedCharacter,
-  fetchCharacters,
+  default as fetchCharacters,
   selectCharacters,
   selectSelectedCharacter,
   selectCharactersStatus,

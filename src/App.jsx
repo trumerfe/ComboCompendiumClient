@@ -1,4 +1,4 @@
-// src_new/App.jsx
+// src/App.jsx
 import React from "react";
 import { Provider } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -10,13 +10,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 // Pages
 import { GameSelectionPage } from "./features/gameSelection";
 import { CharacterSelectionPage } from "./features/characterSelection";
-
-// Import pages as you implement them
-// For now, we'll use placeholder components
-// const GameSelectionPage = () => <div>Game Selection Page</div>;
-// const CharacterSelectionPage = () => <div>Character Selection Page</div>;
-// const ComboListPage = () => <div>Combo List Page</div>;
-// const ComboBuilderPage = () => <div>Combo Builder Page</div>;
 
 // Error Fallback component
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
@@ -45,11 +38,11 @@ const App = () => {
           {/* Sidebar would be included here once implemented */}
           <main className="app__main">
             <Routes>
-              {/* Redirect root to games page */}
-              <Route path="/" element={<Navigate to="/games" replace />} />
-
-              {/* Game Selection */}
-              <Route path="/games" element={<GameSelectionPage />} />
+              {/* Home page is the game selection */}
+              <Route path="/" element={<GameSelectionPage />} />
+              
+              {/* For backward compatibility, also handle /games */}
+              <Route path="/games" element={<Navigate to="/" replace />} />
 
               {/* Character Selection */}
               <Route path="/games/:gameId/characters" element={<CharacterSelectionPage />} />

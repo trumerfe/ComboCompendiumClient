@@ -13,8 +13,6 @@ const CharacterCard = ({ character, onSelect, isSelected }) => {
     if (!usePlaceholder) {
       setUsePlaceholder(true);
       e.target.src = '/placeholder-character.jpg';
-      // If you don't have this placeholder image, you can use a data URL instead:
-      // e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzM0NDk1RSIvPjx0ZXh0IHg9IjgwIiB5PSI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
     }
   };
 
@@ -46,10 +44,10 @@ const CharacterCard = ({ character, onSelect, isSelected }) => {
 
 CharacterCard.propTypes = {
   character: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
-    gameId: PropTypes.number.isRequired,
+    gameId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     difficulty: PropTypes.string.isRequired,
     archetype: PropTypes.string.isRequired
   }).isRequired,

@@ -6,7 +6,7 @@ export { default as GameSelection } from './components/GameSelection';
 export { default as GameSelectionPage } from './pages/GameSelectionPage';
 
 // Re-export hooks
-export { useGameSelection } from './hooks/useGameSelection';
+export { default as useGameSelection } from './hooks/useGameSelection';
 
 // Re-export slice and selectors
 export {
