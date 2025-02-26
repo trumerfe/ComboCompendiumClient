@@ -8,9 +8,14 @@ import './ComboCanvas.scss';
 
 // Component for a canvas element with remove button
 const CanvasElement = ({ element, index, onRemove }) => {
+  // Determine the category for applying the correct CSS class
+  const categoryClass = element.categoryId 
+    ? `combo-canvas__element--${element.categoryId}` 
+    : '';
+    
   return (
     <div className="combo-canvas__element-wrapper">
-      <div className="combo-canvas__element">
+      <div className={`combo-canvas__element ${categoryClass}`}>
         <NotationElement 
           element={element}
           className="combo-canvas__notation-element"

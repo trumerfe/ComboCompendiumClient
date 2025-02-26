@@ -51,11 +51,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // overflow: hidden;
-    
-    &--fallback {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
     
     &:hover {
       .combo-canvas__element-remove {
@@ -63,7 +58,7 @@
       }
     }
     
-    // Add subtle indicators for different element categories
+    // Category-specific styles
     &--buttons {
       border-left: 3px solid var(--color-primary);
     }
@@ -76,9 +71,18 @@
       border-left: 3px solid var(--color-accent-2);
     }
     
+    &--motions {
+      border-left: 3px solid var(--color-accent-3);
+    }
+    
     &--text {
       border-left: 3px solid var(--color-accent-3);
     }
+  }
+  
+  &__notation-element {
+    max-width: 95%;
+    max-height: 95%;
   }
   
   &__element-remove {
@@ -96,33 +100,11 @@
     cursor: pointer;
     opacity: 0;
     transition: opacity var(--transition-fast);
+    z-index: 100;
     
     &:hover {
       background-color: darken(#ef4444, 10%);
     }
-  }
-  
-  &__element-image {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-    
-    &--error {
-      display: none;
-    }
-  }
-  
-  &__element-symbol {
-    font-size: var(--text-lg);
-    font-weight: var(--weight-bold);
-    color: var(--color-text-primary);
-  }
-  
-  &__element-name {
-    font-size: var(--text-xs);
-    text-align: center;
-    padding: var(--spacing-1);
-    color: var(--color-text-primary);
   }
   
   &__drop-indicator {

@@ -11,7 +11,6 @@
   user-select: none;
   position: relative;
   transition: all var(--transition-fast);
-  // overflow: hidden;
   
   &:hover {
     transform: translateY(-2px);
@@ -24,30 +23,39 @@
     cursor: grabbing;
   }
   
-  &--fallback {
-    background-color: rgba(255, 255, 255, 0.1);
+  // Category-specific styles for better visual differentiation
+  &--buttons {
+    border-left: 3px solid var(--color-primary);
   }
   
-  &__image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+  &--directions {
+    border-left: 3px solid var(--color-accent-1);
+  }
+  
+  &--modifiers {
+    border-left: 3px solid var(--color-accent-2);
+  }
+  
+  &--motions {
+    border-left: 3px solid var(--color-accent-3);
+  }
+  
+  &--text {
+    border-left: 3px solid var(--color-accent-3);
+  }
+  
+  // Constrain the content for larger symbols
+  &__content {
+    max-width: 95%;
+    max-height: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
-    &--error {
-      display: none;
+    // Make larger symbols/content fit
+    .notation-element__symbol {
+      font-size: 0.875rem;
+      max-width: 45px;
     }
-  }
-  
-  &__symbol {
-    font-size: var(--text-lg);
-    font-weight: var(--weight-bold);
-    color: var(--color-text-primary);
-  }
-  
-  &__name {
-    font-size: var(--text-xs);
-    text-align: center;
-    padding: var(--spacing-1);
-    color: var(--color-text-primary);
   }
 }

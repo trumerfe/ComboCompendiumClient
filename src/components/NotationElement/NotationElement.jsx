@@ -1,4 +1,3 @@
-// src/components/NotationElement/NotationElement.jsx
 import React, { useState } from 'react';
 import { normalizeNotationElement } from '../../features/comboCreation/services/NotationElementService';
 import './NotationElement.scss';
@@ -50,7 +49,11 @@ const NotationElement = ({
       
       // Then try the symbol from element
       if (normalizedElement.element.symbol && normalizedElement.element.symbol.trim() !== '') {
-        return normalizedElement.element.symbol;
+        return (
+          <span className="notation-element__symbol">
+            {normalizedElement.element.symbol}
+          </span>
+        );
       }
     }
     
@@ -68,21 +71,33 @@ const NotationElement = ({
     
     // Check for display property
     if (normalizedElement.display && normalizedElement.display.trim() !== '') {
-      return normalizedElement.display;
+      return (
+        <span className="notation-element__symbol">
+          {normalizedElement.display}
+        </span>
+      );
     }
     
     // If no display, check for symbol
     if (normalizedElement.symbol && normalizedElement.symbol.trim() !== '') {
-      return normalizedElement.symbol;
+      return (
+        <span className="notation-element__symbol">
+          {normalizedElement.symbol}
+        </span>
+      );
     }
     
     // Try elementId
     if (normalizedElement.elementId && normalizedElement.elementId.trim() !== '') {
-      return normalizedElement.elementId;
+      return (
+        <span className="notation-element__symbol">
+          {normalizedElement.elementId}
+        </span>
+      );
     }
     
     // Last resort, name
-    return normalizedElement.name || '?';
+    return <span className="notation-element__symbol">{normalizedElement.name || '?'}</span>;
   };
   
   // Get the tooltip text - prioritize description, then fall back to name
@@ -110,11 +125,6 @@ const NotationElement = ({
     return normalizedElement.name || normalizedElement.elementId || 'Unknown Element';
   };
   
-  // Get category-specific class for styling
-  const categoryClass = normalizedElement.categoryId 
-    ? `notation-element--${normalizedElement.categoryId}` 
-    : '';
-  
   return (
     <div
       className={`notation-element-container ${isHovered ? 'notation-element-container--show-tooltip' : ''}`}
@@ -122,7 +132,7 @@ const NotationElement = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <span 
-        className={`notation-element ${categoryClass} ${imageError ? 'notation-element--image-error' : ''} ${className}`}
+        className={`notation-element ${imageError ? 'notation-element--image-error' : ''} ${className}`}
         {...otherProps}
       >
         {renderElementContent()}

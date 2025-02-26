@@ -56,7 +56,7 @@
   &__panel {
     border-radius: var(--card-border-radius);
     background-color: rgba(0, 0, 0, 0.2);
-    height: 400px;
+    height: 300px; /* CHANGED: Reduced from 400px to 300px */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -78,7 +78,7 @@
   &__canvas-container {
     border-radius: var(--card-border-radius);
     background-color: rgba(0, 0, 0, 0.2);
-    height: 400px;
+    height: 300px; /* CHANGED: Reduced from 400px to 300px */
     display: flex;
     flex-direction: column;
   }

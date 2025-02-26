@@ -6,7 +6,7 @@
   padding: var(--page-padding);
   
   &__header {
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-6); /* CHANGED: Reduced from var(--spacing-8) */
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -44,15 +44,15 @@
   &__content {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-8);
-    margin-bottom: var(--spacing-8);
+    gap: var(--spacing-6); /* CHANGED: Reduced from var(--spacing-8) */
+    margin-bottom: var(--spacing-6); /* CHANGED: Reduced from var(--spacing-8) */
   }
   
   &__actions {
     display: flex;
     justify-content: flex-end;
     gap: var(--spacing-4);
-    margin-top: var(--spacing-8);
+    margin-top: var(--spacing-6); /* CHANGED: Reduced from var(--spacing-8) */
   }
   
   &__loading,

@@ -1,9 +1,11 @@
 .notation-element-container {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   
   &--show-tooltip {
-    z-index: 10; // Ensure tooltip appears above other elements
+    z-index: 50;
   }
 }
 
@@ -11,23 +13,24 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
-  border-radius: 4px;
+  padding: var(--spacing-1, 0.25rem);
   font-weight: var(--weight-medium, 500);
-  min-width: 24px;
-  min-height: 24px;
-  background-color: rgba(30, 41, 59, 0.7);
-  border: 1px solid transparent;
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 0.875rem;
+  text-align: center;
+  max-width: 100%;
+  max-height: 100%;
+  background-color: transparent !important; /* Force no background */
+  border: none !important; /* Force no border */
+  transition: transform 0.2s;
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
   
   &__image {
-    max-width: 24px;
-    max-height: 24px;
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
     
     &--error {
       display: none;
@@ -35,16 +38,33 @@
   }
   
   &--image-error {
-    background-color: rgba(255, 200, 200, 0.1);
+    background-color: transparent !important; /* Force no background even for error state */
+  }
+  
+  &__symbol {
+    display: inline-block;
+    background: transparent !important; /* Force no background */
+    border: none !important; /* Force no border */
+  }
+  
+  /* Remove all category-specific backgrounds - even more important than before! */
+  &--buttons,
+  &--directions,
+  &--modifiers,
+  &--motions,
+  &--text {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-text-primary) !important; /* Force text color */
   }
   
   // Tooltip styling
   &__tooltip {
     position: absolute;
-    z-index: 20;
-    bottom: 100%;
+    z-index: 100;
+    bottom: calc(100% + 5px);
     left: 50%;
-    transform: translateX(-50%) translateY(-2px);
+    transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 4px 8px;
@@ -52,7 +72,7 @@
     font-size: 12px;
     white-space: nowrap;
     pointer-events: none;
-    animation: fadeIn 0.2s ease-in;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     
     &::after {
       content: '';
@@ -65,35 +85,9 @@
       border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
     }
   }
-  
-  // Category-specific styling
-  &--buttons {
-    background-color: rgba(109, 40, 217, 0.1);
-    border-color: rgba(109, 40, 217, 0.3);
-  }
-  
-  &--directions {
-    background-color: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
-  }
-  
-  &--modifiers {
-    background-color: rgba(249, 115, 22, 0.1);
-    border-color: rgba(249, 115, 22, 0.3);
-  }
-  
-  &--motions {
-    background-color: rgba(236, 72, 153, 0.1);
-    border-color: rgba(236, 72, 153, 0.3);
-  }
-  
-  &--text {
-    background-color: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
-  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(2px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(-2px); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
