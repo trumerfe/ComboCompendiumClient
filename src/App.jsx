@@ -8,6 +8,7 @@ import { store } from "./store";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Pages
+import Navbar from "./components/Navbar"
 import { GameSelectionPage } from "./features/gameSelection";
 import { CharacterSelectionPage } from "./features/characterSelection";
 import { ComboListPage } from "./features/comboList";
@@ -38,6 +39,8 @@ const App = () => {
       >
         <div className="app">
           {/* Sidebar would be included here once implemented */}
+          <Navbar />
+          
           <main className="app__main">
             <Routes>
               {/* Home page is the game selection */}

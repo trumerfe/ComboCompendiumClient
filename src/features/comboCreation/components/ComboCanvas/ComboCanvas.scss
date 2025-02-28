@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .combo-canvas {
   flex: 1;
   padding: var(--spacing-3);
@@ -103,7 +105,7 @@
     z-index: 100;
     
     &:hover {
-      background-color: darken(#ef4444, 10%);
+      background-color: color.adjust(#ef4444, $lightness: -10%);
     }
   }
   
