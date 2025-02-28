@@ -1,6 +1,7 @@
 @use '../../../../styles/abstracts/mixins' as mixins;
 
 .combo-creation-page {
+  min-height: calc(100vh - var(--spacing-16));
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--page-padding);

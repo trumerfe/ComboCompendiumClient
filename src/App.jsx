@@ -6,13 +6,19 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { store } from "./store";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { AuthProvider } from "./contexts/authContext";
+import Layout from "./components/Layout";
 
 // Pages
-import Navbar from "./components/Navbar"
+import Navbar from "./components/Navbar";
 import { GameSelectionPage } from "./features/gameSelection";
 import { CharacterSelectionPage } from "./features/characterSelection";
 import { ComboListPage } from "./features/comboList";
-import { ComboCreationPage } from "./features/comboCreation"
+import { ComboCreationPage } from "./features/comboCreation";
+
+// Auth components
+import { Login } from "./features/auth/components/Login"; // Update this if necessary
+import Register from "./features/auth/components/Register/Register"; // Direct import
 
 // Error Fallback component
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
@@ -37,52 +43,65 @@ const App = () => {
         FallbackComponent={ErrorFallback}
         onReset={() => window.location.reload()}
       >
-        <div className="app">
-          {/* Sidebar would be included here once implemented */}
-          <Navbar />
-          
-          <main className="app__main">
-            <Routes>
-              {/* Home page is the game selection */}
-              <Route path="/" element={<GameSelectionPage />} />
-              
-              {/* For backward compatibility, also handle /games */}
-              <Route path="/games" element={<Navigate to="/" replace />} />
+        <AuthProvider>
+          <div className="app">
+            <Layout>
+              <main className="app__main">
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
 
-              {/* Character Selection */}
-              <Route path="/games/:gameId/characters" element={<CharacterSelectionPage />} />
+                  {/* Home page is the game selection */}
+                  <Route path="/" element={<GameSelectionPage />} />
 
-              {/* Combo List */}
-              <Route path="/games/:gameId/characters/:characterId/combos" element={<ComboListPage />} />
+                  {/* For backward compatibility, also handle /games */}
+                  <Route path="/games" element={<Navigate to="/" replace />} />
 
-              {/* New Combo Creation Route */}
-              <Route path="/games/:gameId/characters/:characterId/combos/create" element={<ComboCreationPage />} />
+                  {/* Character Selection */}
+                  <Route
+                    path="/games/:gameId/characters"
+                    element={<CharacterSelectionPage />}
+                  />
 
-              {/* 404 Page */}
-              <Route
-                path="*"
-                element={
-                  <div className="page">
-                    <h1>404 - Page Not Found</h1>
-                    <p>The page you're looking for doesn't exist.</p>
-                  </div>
-                }
-              />
-            </Routes>
-          </main>
-        </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+                  {/* Combo List */}
+                  <Route
+                    path="/games/:gameId/characters/:characterId/combos"
+                    element={<ComboListPage />}
+                  />
+
+                  {/* New Combo Creation Route */}
+                  <Route
+                    path="/games/:gameId/characters/:characterId/combos/create"
+                    element={<ComboCreationPage />}
+                  />
+
+                  {/* 404 Page */}
+                  <Route
+                    path="*"
+                    element={
+                      <div className="page">
+                        <h1>404 - Page Not Found</h1>
+                        <p>The page you're looking for doesn't exist.</p>
+                      </div>
+                    }
+                  />
+                </Routes>
+              </main>
+            </Layout>
+          </div>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </AuthProvider>
       </ErrorBoundary>
     </Provider>
   );

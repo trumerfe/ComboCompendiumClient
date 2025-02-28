@@ -1,6 +1,6 @@
 // src/features/characterSelection/pages/CharacterSelectionPage/CharacterSelectionPage.jsx
 .character-selection-page {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--spacing-16));
   padding: var(--page-padding);
   
   &__header {

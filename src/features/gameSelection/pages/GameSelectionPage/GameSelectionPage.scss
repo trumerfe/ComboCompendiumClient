@@ -1,5 +1,5 @@
 .game-selection-page {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--spacing-16));
   
   &__header {
     text-align: center;

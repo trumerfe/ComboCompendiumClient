@@ -2,7 +2,7 @@
 
 .combo-form {
   @include mixins.glass-effect;
-  padding: var(--spacing-6);
+  padding: var(--spacing-4);
   border-radius: var(--card-border-radius);
   
   &__title {

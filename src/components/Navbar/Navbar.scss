@@ -1,93 +1,102 @@
-// src/components/Navbar/Navbar.scss
+@use '../../styles/abstracts/mixins' as mixins;
+
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-2) var(--page-padding);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--spacing-16);
   background-color: var(--color-bg-elevated);
   border-bottom: 1px solid var(--glass-border-color);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  z-index: 20;
   
-  &__brand {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-3);
+  &__container {
+    @include mixins.flex(row, space-between, center);
+    height: 100%;
+    padding: 0 var(--spacing-6);
+    max-width: 1200px;
+    margin: 0 auto;
   }
   
-  &__logo {
-    cursor: pointer;
+  &__brand {
+    @include mixins.flex(row, flex-start, center);
+    gap: var(--spacing-3);
+    text-decoration: none;
     transition: transform var(--transition-fast);
     
     &:hover {
-      transform: scale(1.05);
+      transform: translateY(-2px);
     }
-    
-    &-placeholder {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
-      background-color: var(--color-primary);
-      border-radius: 8px;
-      color: white;
-      font-weight: var(--weight-bold);
-      font-size: var(--text-lg);
-    }
+  }
+  
+  &__logo {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   &__title {
     font-size: var(--text-xl);
-    font-weight: var(--weight-semibold);
-    color: var(--color-text-primary);
-    margin: 0;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    transition: color var(--transition-fast);
   }
   
   &__actions {
-    display: flex;
-    gap: var(--spacing-3);
+    @include mixins.flex(row, flex-end, center);
+    gap: var(--spacing-4);
+  }
+  
+  &__user-email {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    margin-right: var(--spacing-2);
   }
   
   &__button {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-2);
-  }
-}
-
-// Media query for smaller screens
-@media (max-width: 768px) {
-  .navbar {
-    padding: var(--spacing-3) var(--spacing-4);
+    @include mixins.flex(row, center, center);
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
     
-    &__title {
-      font-size: var(--text-lg);
+    &--primary {
+      background-color: var(--color-primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(109, 40, 217, 0.4);
+      
+      &:hover {
+        background-color: var(--color-primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(109, 40, 217, 0.5);
+      }
+      
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 4px rgba(109, 40, 217, 0.4);
+      }
     }
     
-    &__logo-placeholder {
-      width: 32px;
-      height: 32px;
-      font-size: var(--text-base);
-    }
-  }
-}
-
-// For very small screens
-@media (max-width: 480px) {
-  .navbar {
-    &__title {
-      font-size: var(--text-base);
-    }
-    
-    &__logo-placeholder {
-      width: 28px;
-      height: 28px;
+    &--secondary {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-text-secondary);
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: var(--color-text-primary);
+        transform: translateY(-2px);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
     }
   }
 }

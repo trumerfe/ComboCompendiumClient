@@ -1,0 +1,9 @@
+// src/features/auth/components/Register/Register.scss
+@use '../Login/Login.scss';
+
+// Any Register-specific styles can be added here
+.auth-card {
+  &__title {
+    margin-bottom: var(--spacing-3);
+  }
+}
