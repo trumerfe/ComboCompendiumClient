@@ -1,5 +1,4 @@
-// src/features/characterSelection/hooks/useCharacterSelection.js
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -20,41 +19,66 @@ import { selectSelectedGame } from '../../gameSelection/store/gameSelectionSlice
  * Custom hook for character selection functionality
  * Provides access to character data and related actions
  * 
- * @param {string} gameId - Optional game ID to load characters for
+ * @param {string} [gameId=null] - Optional game ID to load characters for
+ * @returns {Object} Character selection state and actions
  */
 const useCharacterSelection = (gameId = null) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Select data from Redux store
+  // Select data from Redux store with memoized selectors
   const characters = useSelector(selectCharacters);
   const selectedCharacter = useSelector(selectSelectedCharacter);
   const status = useSelector(selectCharactersStatus);
   const error = useSelector(selectCharactersError);
   const selectedGame = useSelector(selectSelectedGame);
   
-  // Load characters for the specified game ID or from the selected game in state
+  // Determine the target game ID with memoization
+  const targetGameId = useMemo(() => {
+    return gameId || (selectedGame && selectedGame.id) || null;
+  }, [gameId, selectedGame]);
+
+  // Load characters for the specified game ID
   useEffect(() => {
-    const targetGameId = gameId || (selectedGame && selectedGame.id);
-    
+    // Additional logging for debugging
+    console.log('Character Selection Hook - Loading Characters', {
+      targetGameId,
+      charactersLength: characters.length,
+      status
+    });
+
+    // Only fetch if we have a valid game ID and no characters are loaded
     if (targetGameId && characters.length === 0 && status === 'idle') {
       dispatch(fetchCharactersByGameId(targetGameId));
     }
-  }, [dispatch, gameId, selectedGame, characters.length, status]);
+  }, [dispatch, targetGameId, characters.length, status]);
 
   // Select a character and navigate to combos page
   const handleSelectCharacter = useCallback((character) => {
+    // Validate character input
+    if (!character || !character.id) {
+      console.error('Invalid character selected:', character);
+      return;
+    }
+
     dispatch(selectCharacter(character));
     
     // Navigate to the character's combo page
-    const targetGameId = gameId || (selectedGame && selectedGame.id);
     if (targetGameId) {
-      navigate(`/games/${targetGameId}/characters/${character.id}/combos`);
+      const comboPath = `/games/${targetGameId}/characters/${character.id}/combos`;
+      console.log('Navigating to character combos:', comboPath);
+      navigate(comboPath);
+    } else {
+      console.warn('Cannot navigate - no game ID available');
     }
-  }, [dispatch, navigate, gameId, selectedGame]);
+  }, [dispatch, navigate, targetGameId]);
 
   // Load a specific character by ID
   const loadCharacterById = useCallback((characterId) => {
+    if (!characterId) {
+      console.warn('Attempted to load character with no ID');
+      return;
+    }
     dispatch(fetchCharacterById(characterId));
   }, [dispatch]);
 
@@ -68,22 +92,31 @@ const useCharacterSelection = (gameId = null) => {
     dispatch(clearCharacters());
   }, [dispatch]);
 
-  // Load characters for a specific game (useful when changing games)
-  const loadCharactersForGame = useCallback((targetGameId) => {
-    if (targetGameId) {
-      dispatch(clearCharacters());
-      dispatch(fetchCharactersByGameId(targetGameId));
+  // Load characters for a specific game
+  const loadCharactersForGame = useCallback((newGameId) => {
+    if (!newGameId) {
+      console.warn('Attempted to load characters with no game ID');
+      return;
     }
+
+    dispatch(clearCharacters());
+    dispatch(fetchCharactersByGameId(newGameId));
   }, [dispatch]);
 
   // Reload characters (useful for retrying after an error)
   const reloadCharacters = useCallback(() => {
-    const targetGameId = gameId || (selectedGame && selectedGame.id);
-    if (targetGameId) {
-      dispatch(clearError());
-      dispatch(fetchCharactersByGameId(targetGameId));
+    if (!targetGameId) {
+      console.warn('Cannot reload characters - no game ID available');
+      return;
     }
-  }, [dispatch, gameId, selectedGame]);
+
+    dispatch(clearError());
+    dispatch(fetchCharactersByGameId(targetGameId));
+  }, [dispatch, targetGameId]);
+
+  // Compute derived states
+  const isLoading = status === 'loading';
+  const hasError = status === 'failed';
 
   return {
     // State
@@ -91,7 +124,8 @@ const useCharacterSelection = (gameId = null) => {
     selectedCharacter,
     status,
     error,
-    isLoading: status === 'loading',
+    isLoading,
+    hasError,
     
     // Actions
     selectCharacter: handleSelectCharacter,

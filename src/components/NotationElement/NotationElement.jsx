@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { normalizeNotationElement } from '../../features/comboCreation/services/NotationElementService';
 import './NotationElement.scss';
 
 /**
  * A reusable component for rendering notation elements with consistent fallback hierarchy
- * Fallback flow: image → display → symbol → id → name
- * Shows a tooltip with the element description or name on hover
+ * Handles various potential data structures
  */
 const NotationElement = ({ 
   element, 
@@ -21,108 +19,50 @@ const NotationElement = ({
     return null;
   }
   
-  // Normalize the element to ensure consistent structure
-  const normalizedElement = normalizeNotationElement(element);
-  
   // Handle image loading errors
   const handleImageError = () => {
     setImageError(true);
   };
   
-  // Render the element content following the fallback flow:
-  // First, handle the nested element structure from expandedNotation
-  // Then: image → display → symbol → id → name
+  // Render the element content with multiple fallback strategies
   const renderElementContent = () => {
-    // First, check if there's an element property (from expandedNotation structure)
-    if (normalizedElement.element) {
-      // If the element has an imageUrl, try to use that first
-      if (normalizedElement.element.imageUrl && !imageError) {
-        return (
-          <img 
-            src={normalizedElement.element.imageUrl} 
-            alt={normalizedElement.element.name} 
-            className="notation-element__image"
-            onError={handleImageError}
-          />
-        );
-      }
-      
-      // Then try the symbol from element
-      if (normalizedElement.element.symbol && normalizedElement.element.symbol.trim() !== '') {
-        return (
-          <span className="notation-element__symbol">
-            {normalizedElement.element.symbol}
-          </span>
-        );
-      }
-    }
-    
-    // Continue with regular fallback checks...
-    if (normalizedElement.imageUrl && !imageError) {
+    // Prioritize image if available and not errored
+    if (element.imageUrl && !imageError) {
       return (
         <img 
-          src={normalizedElement.imageUrl} 
-          alt={normalizedElement.name} 
+          src={element.imageUrl} 
+          alt={element.name || 'Notation Element'} 
           className="notation-element__image"
           onError={handleImageError}
         />
       );
     }
     
-    // Check for display property
-    if (normalizedElement.display && normalizedElement.display.trim() !== '') {
-      return (
-        <span className="notation-element__symbol">
-          {normalizedElement.display}
-        </span>
-      );
-    }
+    // Fallback to symbol, then name, then elementId
+    const displayValue = 
+      element.symbol || 
+      element.name || 
+      element.elementId || 
+      '?';
     
-    // If no display, check for symbol
-    if (normalizedElement.symbol && normalizedElement.symbol.trim() !== '') {
-      return (
-        <span className="notation-element__symbol">
-          {normalizedElement.symbol}
-        </span>
-      );
-    }
-    
-    // Try elementId
-    if (normalizedElement.elementId && normalizedElement.elementId.trim() !== '') {
-      return (
-        <span className="notation-element__symbol">
-          {normalizedElement.elementId}
-        </span>
-      );
-    }
-    
-    // Last resort, name
-    return <span className="notation-element__symbol">{normalizedElement.name || '?'}</span>;
+    return (
+      <span className="notation-element__symbol">
+        {displayValue}
+      </span>
+    );
   };
   
-  // Get the tooltip text - prioritize description, then fall back to name
+  // Get tooltip text with multiple fallback strategies
   const getTooltipText = () => {
-    // First check for description in original element (for expanded notation)
-    if (element.description) {
-      return element.description;
-    }
+    // Construct a descriptive tooltip
+    const categoryName = element.categoryName || 'Notation';
+    const name = element.name || element.elementId || '';
+    const description = element.description || '';
     
-    // Then check in normalized element
-    if (normalizedElement.description) {
-      return normalizedElement.description;
-    }
-    
-    // Then check in element.element (for nested structure)
-    if (normalizedElement.element && normalizedElement.element.description) {
-      return normalizedElement.element.description;
-    }
-    
-    // Fall back to name with similar checks
-    if (normalizedElement.element && normalizedElement.element.name) {
-      return normalizedElement.element.name;
-    }
-    
-    return normalizedElement.name || normalizedElement.elementId || 'Unknown Element';
+    // Combine available information
+    return description 
+      ? `${categoryName}: ${name} - ${description}`
+      : `${categoryName}: ${name}`;
   };
   
   return (

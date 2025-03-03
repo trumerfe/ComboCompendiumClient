@@ -1,8 +1,7 @@
-// src/features/gameSelection/store/gameSelectionSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getGames, getGameById } from '../../../services/mockDataService';
+import { getGames, getGameById } from '../../../services/apiService';
 
-// Async thunk to fetch games from the mock data service
+// Async thunk to fetch games from the API service
 export const fetchGames = createAsyncThunk(
   'gameSelection/fetchGames',
   async (_, { rejectWithValue }) => {
@@ -10,7 +9,10 @@ export const fetchGames = createAsyncThunk(
       const games = await getGames();
       return games;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to fetch games. Please try again.');
+      console.error('Fetch games error:', error);
+      return rejectWithValue(
+        error.message || 'Failed to fetch games. Please try again.'
+      );
     }
   }
 );
@@ -21,12 +23,12 @@ export const fetchGameById = createAsyncThunk(
   async (gameId, { rejectWithValue }) => {
     try {
       const game = await getGameById(gameId);
-      if (!game) {
-        throw new Error(`Game with ID ${gameId} not found`);
-      }
       return game;
     } catch (error) {
-      return rejectWithValue(error.message || 'Failed to fetch game details');
+      console.error(`Fetch game by ID error (${gameId}):`, error);
+      return rejectWithValue(
+        error.message || 'Failed to fetch game details'
+      );
     }
   }
 );
@@ -54,6 +56,7 @@ const gameSelectionSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+      state.status = 'idle';
     }
   },
   extraReducers: (builder) => {
@@ -70,7 +73,8 @@ const gameSelectionSlice = createSlice({
       })
       .addCase(fetchGames.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Something went wrong';
+        state.games = []; // Clear games on error
+        state.error = action.payload || 'Failed to fetch games';
       })
       
       // Fetch game by id cases
@@ -85,17 +89,23 @@ const gameSelectionSlice = createSlice({
       })
       .addCase(fetchGameById.rejected, (state, action) => {
         state.status = 'failed';
+        state.selectedGame = null; // Clear selected game on error
         state.error = action.payload || 'Failed to fetch game details';
       });
   }
 });
 
 // Export actions
-export const { selectGame, clearSelectedGame, setError, clearError } = gameSelectionSlice.actions;
+export const { 
+  selectGame, 
+  clearSelectedGame, 
+  setError, 
+  clearError 
+} = gameSelectionSlice.actions;
 
 // Selectors
 export const selectGamesState = state => state.gameSelection;
-export const selectGames = state => state.gameSelection.games;
+export const selectGames = state => state.gameSelection.games || [];
 export const selectSelectedGame = state => state.gameSelection.selectedGame;
 export const selectGamesStatus = state => state.gameSelection.status;
 export const selectGamesError = state => state.gameSelection.error;

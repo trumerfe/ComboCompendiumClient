@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../../contexts/authContext';
+import { getNotationDataForComboBuilder, createCombo } from '../../../services/apiService';
 
 import {
   fetchNotationData,
@@ -32,9 +34,12 @@ const useComboCreation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { gameId, characterId } = useParams();
+  const { currentUser, userLoggedIn } = useAuth();
   
   // Local drag state
   const [isDragging, setIsDragging] = useState(false);
+  // Additional state for API calls
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Selectors
   const status = useSelector(selectComboCreationStatus);
@@ -47,6 +52,14 @@ const useComboCreation = () => {
   
   const isLoading = status === 'loading';
   const isError = status === 'failed';
+  
+  // Check for authentication
+  useEffect(() => {
+    if (!userLoggedIn) {
+      toast.error('You must be logged in to create combos');
+      navigate(`/login`, { state: { from: `/games/${gameId}/characters/${characterId}/builder` } });
+    }
+  }, [userLoggedIn, navigate, gameId, characterId]);
   
   // Initialize with game and character IDs from URL
   useEffect(() => {
@@ -102,8 +115,14 @@ const useComboCreation = () => {
     dispatch(removeComboTag(tag));
   }, [dispatch]);
   
-  // Submission handling
+  // Submission handling - updated to use the API service directly
   const handleSubmit = useCallback(async () => {
+    if (!userLoggedIn) {
+      toast.error('You must be logged in to create combos');
+      navigate('/login', { state: { from: `/games/${gameId}/characters/${characterId}/builder` } });
+      return;
+    }
+    
     if (comboSequence.length === 0) {
       toast.error('Combo sequence cannot be empty');
       return;
@@ -113,6 +132,8 @@ const useComboCreation = () => {
       toast.error('Please provide a name for your combo');
       return;
     }
+    
+    setIsSubmitting(true);
     
     const comboData = {
       gameId,
@@ -126,22 +147,27 @@ const useComboCreation = () => {
       difficulty: comboDetails.difficulty,
       description: comboDetails.description,
       video: comboDetails.video,
-      tags: comboDetails.tags,
-      createdBy: 'user123', // Normally would be the current user ID
-      createdAt: new Date().toISOString(),
-      likes: 0,
-      dislikes: 0
+      tags: comboDetails.tags
+      // No need to include createdBy, createdAt, likes, dislikes - the API will handle these
     };
     
     try {
-      await dispatch(saveCombo(comboData)).unwrap();
-      toast.success('Combo created successfully!');
-      navigate(`/games/${gameId}/characters/${characterId}/combos`);
+      // Use the API service instead of the Redux thunk
+      const response = await createCombo(comboData);
+      
+      if (response.success) {
+        toast.success('Combo created successfully!');
+        navigate(`/games/${gameId}/characters/${characterId}/combos`);
+      } else {
+        throw new Error(response.message || 'Failed to create combo');
+      }
     } catch (err) {
-      toast.error(err || 'Failed to create combo');
+      toast.error(err.message || 'Failed to create combo');
+    } finally {
+      setIsSubmitting(false);
     }
   }, [
-    dispatch, navigate, gameId, characterId,
+    userLoggedIn, navigate, gameId, characterId,
     comboSequence, comboDetails
   ]);
   
@@ -169,6 +195,7 @@ const useComboCreation = () => {
     error,
     isDragging,
     setIsDragging,
+    isSubmitting,
     
     // Element Functions
     handleAddElement,

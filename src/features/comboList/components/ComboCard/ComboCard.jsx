@@ -1,30 +1,49 @@
-// src/features/comboList/components/ComboCard/ComboCard.jsx
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { likeCombo, dislikeCombo } from '../../store/comboListSlice';
+import { toast } from 'react-toastify';
 import NotationElement from '../../../../components/NotationElement';
+import { useAuth } from '../../../../contexts/authContext';
+import { likeCombo, dislikeCombo } from '../../../../services/apiService';
+import { updateCombo } from '../../store/comboListSlice';
+import { expandComboNotation } from '../../../../services/notationExpansionService';
 import './ComboCard.scss';
 
-const ComboCard = ({ combo, currentUserId = 'user123' }) => {
+const ComboCard = ({ combo }) => {
   // Ensure combo is a valid object
   if (!combo || typeof combo !== 'object') {
     return null; // Don't render anything if combo is invalid
   }
   
   const dispatch = useDispatch();
+  const { currentUser, userLoggedIn } = useAuth();
+  const [isLiking, setIsLiking] = useState(false);
+  const [isDisliking, setIsDisliking] = useState(false);
+  
+  // Expand notation with full details
+  const expandedNotation = useMemo(() => {
+    try {
+      return expandComboNotation(combo);
+    } catch (error) {
+      console.error('Failed to expand notation:', error);
+      return combo.notation;
+    }
+  }, [combo]);
   
   // Destructure with default values to prevent undefined errors
   const { 
     id: comboId = '',
     name = 'Unnamed Combo', 
-    expandedNotation = [], 
     damage = 0, 
     difficulty = 'medium', 
     tags = [], 
     createdAt = new Date().toISOString(), 
-    likes = 0, 
-    dislikes = 0 
+    likes = [], 
+    dislikes = [] 
   } = combo;
+
+  // Check if the current user has already liked/disliked
+  const hasLiked = userLoggedIn && Array.isArray(likes) && currentUser?.uid && likes.includes(currentUser.uid);
+  const hasDisliked = userLoggedIn && Array.isArray(dislikes) && currentUser?.uid && dislikes.includes(currentUser.uid);
 
   // Format date - handle invalid dates gracefully
   let formattedDate = '';
@@ -53,14 +72,55 @@ const ComboCard = ({ combo, currentUserId = 'user123' }) => {
   };
   
   // Like/Dislike handlers
-  const handleLike = () => {
-    if (!comboId) return; // Don't dispatch if no combo ID
-    dispatch(likeCombo({ comboId, userId: currentUserId }));
+  const handleLike = async () => {
+    if (!comboId) return; // Don't proceed if no combo ID
+    
+    if (!userLoggedIn) {
+      toast.info('Please log in to like combos');
+      return;
+    }
+    
+    try {
+      setIsLiking(true);
+      const response = await likeCombo(comboId);
+      
+      // New API returns { success: true, data: {...} }
+      if (response.success) {
+        dispatch(updateCombo(response.data));
+        if (!hasLiked) {
+          toast.success('Combo liked!');
+        }
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to like combo');
+    } finally {
+      setIsLiking(false);
+    }
   };
   
-  const handleDislike = () => {
-    if (!comboId) return; // Don't dispatch if no combo ID
-    dispatch(dislikeCombo({ comboId, userId: currentUserId }));
+  const handleDislike = async () => {
+    if (!comboId) return; // Don't proceed if no combo ID
+    
+    if (!userLoggedIn) {
+      toast.info('Please log in to dislike combos');
+      return;
+    }
+    
+    try {
+      setIsDisliking(true);
+      const response = await dislikeCombo(comboId);
+      
+      if (response.success) {
+        dispatch(updateCombo(response.data));
+        if (!hasDisliked) {
+          toast.success('Combo disliked');
+        }
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to dislike combo');
+    } finally {
+      setIsDisliking(false);
+    }
   };
 
   return (
@@ -104,24 +164,26 @@ const ComboCard = ({ combo, currentUserId = 'user123' }) => {
           
           <div className="combo-card__rating">
             <button 
-              className="combo-card__like-button"
+              className={`combo-card__like-button ${hasLiked ? 'combo-card__like-button--active' : ''}`}
               onClick={handleLike}
+              disabled={isLiking || isDisliking}
               aria-label="Like combo"
               title="Like this combo"
             >
               <span className="combo-card__likes">
-                <i className="icon-thumbs-up">👍</i> {likes}
+                <i className="icon-thumbs-up">👍</i> {Array.isArray(likes) ? likes.length : 0}
               </span>
             </button>
             
             <button 
-              className="combo-card__dislike-button"
+              className={`combo-card__dislike-button ${hasDisliked ? 'combo-card__dislike-button--active' : ''}`}
               onClick={handleDislike}
+              disabled={isLiking || isDisliking}
               aria-label="Dislike combo"
               title="Dislike this combo"
             >
               <span className="combo-card__dislikes">
-                <i className="icon-thumbs-down">👎</i> {dislikes}
+                <i className="icon-thumbs-down">👎</i> {Array.isArray(dislikes) ? dislikes.length : 0}
               </span>
             </button>
           </div>

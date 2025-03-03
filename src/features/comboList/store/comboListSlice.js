@@ -2,88 +2,48 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { 
   getCombosByCharacterId, 
-  getExpandedCombo, 
-  getGameNotation, 
-  getNotationElement,
   likeCombo as likeComboService,
   dislikeCombo as dislikeComboService
-} from '../../../services/mockDataService';
-
-// Helper function for expanding combo notation
-const expandComboNotation = async (combo) => {
-  if (!combo) return null;
-  
-  try {
-    // Get game notation for this combo
-    const gameNotation = await getGameNotation(combo.gameId);
-    if (!gameNotation) return combo;
-    
-    // Map notation elements to their expanded form
-    const expandedNotation = await Promise.all(
-      (combo.notation || []).map(async (item) => {
-        if (!item) return { display: '?', description: 'Unknown' };
-        
-        const { categoryId, elementId } = item;
-        
-        // Get the full notation element
-        const notationElement = await getNotationElement(combo.gameId, categoryId, elementId);
-        
-        return {
-          ...item,
-          display: notationElement?.symbol || '?',
-          description: notationElement?.name || 'Unknown'
-        };
-      })
-    );
-    
-    return {
-      ...combo,
-      expandedNotation
-    };
-  } catch (error) {
-    console.error('Error expanding combo notation:', error);
-    return combo;
-  }
-};
+} from '../../../services/apiService';
 
 // Helper function to safely sort combos
 const sortCombosByLikes = (combos = [], direction = 'desc') => {
   if (!Array.isArray(combos)) return [];
   
   return [...combos].sort((a, b) => {
-    const aLikes = a?.likes || 0;
-    const bLikes = b?.likes || 0;
+    // Updated to handle likes as arrays instead of numbers
+    const aLikes = a?.likes?.length || 0;
+    const bLikes = b?.likes?.length || 0;
     const comparison = aLikes - bLikes;
     return direction === 'asc' ? comparison : -comparison;
   });
 };
 
-// Fetch combos thunk
+// Fetch combos thunk - updated for new API format
 export const fetchCombosByCharacterId = createAsyncThunk(
   'comboList/fetchCombosByCharacterId',
-  async (characterId, { rejectWithValue }) => {
+  async (characterId, { rejectWithValue, getState }) => {
     if (!characterId) {
       return rejectWithValue('Character ID is required');
     }
     
     try {
-      // Get combos using the mockDataService
-      const combos = await getCombosByCharacterId(characterId);
+      // Get current sort direction
+      const { sortDirection } = getState().comboList;
       
-      if (!Array.isArray(combos)) {
-        return [];
+      // Get combos using the new API service
+      const response = await getCombosByCharacterId(characterId, {
+        sortBy: 'likes',
+        sortDirection
+      });
+      
+      // Handle new API response format
+      if (response.success) {
+        // The data is already processed by the backend with expanded notation
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to fetch combos');
       }
-      
-      // Expand notation for each combo
-      const expandedCombos = await Promise.all(
-        combos.map(async combo => {
-          if (!combo) return null;
-          return await expandComboNotation(combo);
-        })
-      );
-      
-      // Filter out any null values
-      return expandedCombos.filter(Boolean);
     } catch (error) {
       console.error('Error fetching combos:', error);
       return rejectWithValue(error.message || 'Failed to fetch combos');
@@ -91,17 +51,22 @@ export const fetchCombosByCharacterId = createAsyncThunk(
   }
 );
 
-// New thunk for liking a combo
+// Updated thunk for liking a combo
 export const likeCombo = createAsyncThunk(
   'comboList/likeCombo',
-  async ({ comboId, userId }, { rejectWithValue }) => {
-    if (!comboId || !userId) {
-      return rejectWithValue('Combo ID and User ID are required');
+  async (comboId, { rejectWithValue }) => {
+    if (!comboId) {
+      return rejectWithValue('Combo ID is required');
     }
     
     try {
-      const updatedCombo = await likeComboService(comboId, userId);
-      return { comboId, updatedCombo };
+      const response = await likeComboService(comboId);
+      
+      if (response.success) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to like combo');
+      }
     } catch (error) {
       console.error('Error liking combo:', error);
       return rejectWithValue(error.message || 'Failed to like combo');
@@ -109,17 +74,22 @@ export const likeCombo = createAsyncThunk(
   }
 );
 
-// New thunk for disliking a combo
+// Updated thunk for disliking a combo
 export const dislikeCombo = createAsyncThunk(
   'comboList/dislikeCombo',
-  async ({ comboId, userId }, { rejectWithValue }) => {
-    if (!comboId || !userId) {
-      return rejectWithValue('Combo ID and User ID are required');
+  async (comboId, { rejectWithValue }) => {
+    if (!comboId) {
+      return rejectWithValue('Combo ID is required');
     }
     
     try {
-      const updatedCombo = await dislikeComboService(comboId, userId);
-      return { comboId, updatedCombo };
+      const response = await dislikeComboService(comboId);
+      
+      if (response.success) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to dislike combo');
+      }
     } catch (error) {
       console.error('Error disliking combo:', error);
       return rejectWithValue(error.message || 'Failed to dislike combo');
@@ -146,10 +116,18 @@ const comboListSlice = createSlice({
     // Add a reducer to change sort direction
     toggleSortDirection: (state) => {
       state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
-      
-      // Re-sort the combos
-      if (state.combos && state.combos.length > 0) {
-        state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+    },
+    
+    // Add a reducer to update a combo (for like/dislike actions)
+    updateCombo: (state, action) => {
+      if (Array.isArray(state.combos)) {
+        const index = state.combos.findIndex(combo => combo.id === action.payload.id);
+        if (index !== -1) {
+          state.combos[index] = action.payload;
+          
+          // Re-sort combos if needed
+          state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+        }
       }
     }
   },
@@ -166,7 +144,7 @@ const comboListSlice = createSlice({
         // Ensure we have valid data
         const combos = action.payload || [];
         
-        // Sort combos by likes (default)
+        // The backend should handle sorting, but we'll sort again just in case
         state.combos = sortCombosByLikes(combos, state.sortDirection);
         state.error = null;
       })
@@ -177,18 +155,16 @@ const comboListSlice = createSlice({
       })
       
       // Like combo cases
-      .addCase(likeCombo.pending, (state) => {
-        // Optional: could add a 'liking' state if needed
-      })
       .addCase(likeCombo.fulfilled, (state, action) => {
-        const { comboId, updatedCombo } = action.payload;
+        // We now get the full updated combo from the API
+        const updatedCombo = action.payload;
         
         // Ensure combos exists and is an array
         if (Array.isArray(state.combos)) {
           // Update the combo in the list
           state.combos = state.combos.map(combo => 
-            combo.id === comboId 
-              ? { ...combo, likes: updatedCombo.likes }
+            combo.id === updatedCombo.id 
+              ? updatedCombo
               : combo
           );
           
@@ -201,18 +177,16 @@ const comboListSlice = createSlice({
       })
       
       // Dislike combo cases
-      .addCase(dislikeCombo.pending, (state) => {
-        // Optional: could add a 'disliking' state if needed
-      })
       .addCase(dislikeCombo.fulfilled, (state, action) => {
-        const { comboId, updatedCombo } = action.payload;
+        // We now get the full updated combo from the API
+        const updatedCombo = action.payload;
         
         // Ensure combos exists and is an array
         if (Array.isArray(state.combos)) {
           // Update the combo in the list
           state.combos = state.combos.map(combo => 
-            combo.id === comboId 
-              ? { ...combo, dislikes: updatedCombo.dislikes }
+            combo.id === updatedCombo.id 
+              ? updatedCombo
               : combo
           );
         }
@@ -224,7 +198,7 @@ const comboListSlice = createSlice({
 });
 
 // Export actions
-export const { clearCombos, toggleSortDirection } = comboListSlice.actions;
+export const { clearCombos, toggleSortDirection, updateCombo } = comboListSlice.actions;
 
 // Export selectors
 export const selectCombos = state => state.comboList?.combos || [];

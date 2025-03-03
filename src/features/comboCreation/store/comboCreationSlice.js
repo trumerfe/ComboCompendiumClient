@@ -3,7 +3,7 @@ import {
   getGameNotation,
   getNotationDataForComboBuilder,
   createCombo,
-} from "../../../services/mockDataService";
+} from "../../../services/apiService";
 import {
   COMBO_TAGS,
   DEFAULT_COMBO_VALUES,
@@ -11,30 +11,39 @@ import {
 
 // Async thunks
 export const fetchNotationData = createAsyncThunk(
-  "comboCreation/fetchNotationData",
+  'comboCreation/fetchNotationData',
   async ({ gameId, characterId }, { rejectWithValue }) => {
     try {
-      const notationData = await getNotationDataForComboBuilder(
-        gameId,
-        characterId
-      );
-      return notationData;
+      // Use the new API service
+      const response = await getNotationDataForComboBuilder(gameId, characterId);
+      
+      // Handle the new response format
+      if (response.success) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message || 'Failed to fetch notation data');
+      }
     } catch (error) {
-      console.error("Error fetching notation data:", error);
-      return rejectWithValue(error.message || "Failed to fetch notation data");
+      return rejectWithValue(error.message || 'Failed to fetch notation data');
     }
   }
 );
 
 export const saveCombo = createAsyncThunk(
-  "comboCreation/saveCombo",
+  'comboCreation/saveCombo',
   async (comboData, { rejectWithValue }) => {
     try {
-      const newCombo = await createCombo(comboData);
-      return newCombo;
+      // Use the API service
+      const response = await createCombo(comboData);
+      
+      // Handle the new response format
+      if (response.success) {
+        return response.data;
+      } else {
+        return rejectWithValue(response.message || 'Failed to save combo');
+      }
     } catch (error) {
-      console.error("Error saving combo:", error);
-      return rejectWithValue(error.message || "Failed to save combo");
+      return rejectWithValue(error.message || 'Failed to save combo');
     }
   }
 );

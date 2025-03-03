@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from "react";
 import { Provider } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -8,6 +7,7 @@ import { store } from "./store";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { AuthProvider } from "./contexts/authContext";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 // Pages
 import Navbar from "./components/Navbar";
@@ -17,8 +17,8 @@ import { ComboListPage } from "./features/comboList";
 import { ComboCreationPage } from "./features/comboCreation";
 
 // Auth components
-import { Login } from "./features/auth/components/Login"; // Update this if necessary
-import Register from "./features/auth/components/Register/Register"; // Direct import
+import { Login } from "./features/auth/components/Login"; 
+import Register from "./features/auth/components/Register/Register";
 
 // Error Fallback component
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
@@ -48,6 +48,7 @@ const App = () => {
             <Layout>
               <main className="app__main">
                 <Routes>
+                  {/* Public Routes */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
 
@@ -69,10 +70,21 @@ const App = () => {
                     element={<ComboListPage />}
                   />
 
-                  {/* New Combo Creation Route */}
+                  {/* Protected Routes */}
+                  {/* Combo Builder (Updated path) */}
+                  <Route
+                    path="/games/:gameId/characters/:characterId/builder"
+                    element={
+                      <ProtectedRoute>
+                        <ComboCreationPage />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Old Combo Creation Route - redirect to new path */}
                   <Route
                     path="/games/:gameId/characters/:characterId/combos/create"
-                    element={<ComboCreationPage />}
+                    element={<Navigate to="../builder" replace />}
                   />
 
                   {/* 404 Page */}
@@ -99,7 +111,7 @@ const App = () => {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="light"
+            theme="dark" // Changed to dark theme to match your app style
           />
         </AuthProvider>
       </ErrorBoundary>

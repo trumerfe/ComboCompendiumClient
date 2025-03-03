@@ -1,11 +1,14 @@
-// src/features/comboList/components/ComboList/ComboList.jsx
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ComboCard from '../ComboCard';
 import { selectCombos, selectComboListStatus } from '../../store/comboListSlice';
+import { useAuth } from '../../../../contexts/authContext';
 import './ComboList.scss';
 
-const ComboList = ({ status, error, onRetry, currentUserId }) => {
+const ComboList = ({ status, error, onRetry }) => {
+  // Get auth status - we don't pass currentUserId anymore as ComboCard gets it from context
+  const { userLoggedIn } = useAuth();
+  
   // Get combos from Redux - ensure it has a default value
   const combosFromState = useSelector(selectCombos);
   const combos = Array.isArray(combosFromState) ? combosFromState : [];
@@ -14,8 +17,6 @@ const ComboList = ({ status, error, onRetry, currentUserId }) => {
   
   // Use provided status or get from store
   const currentStatus = status || listStatus;
-
-  console.log(combos)
 
   // Handle loading state
   if (currentStatus === 'loading') {
@@ -51,7 +52,7 @@ const ComboList = ({ status, error, onRetry, currentUserId }) => {
         <div className="combo-list__empty-icon">🔍</div>
         <h3 className="combo-list__empty-title">No combos found</h3>
         <p className="combo-list__empty-message">
-          Be the first to create a combo for this character!
+          {userLoggedIn ? 'Be the first to create a combo for this character!' : 'Log in to create combos for this character!'}
         </p>
       </div>
     );
@@ -64,8 +65,7 @@ const ComboList = ({ status, error, onRetry, currentUserId }) => {
         {combos.map((combo) => (
           <ComboCard 
             key={combo.id} 
-            combo={combo} 
-            currentUserId={currentUserId} 
+            combo={combo}
           />
         ))}
       </div>

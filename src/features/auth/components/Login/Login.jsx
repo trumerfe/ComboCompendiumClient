@@ -1,6 +1,5 @@
-// src/features/auth/components/Login/Login.jsx
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import "./Login.scss";
 import {
   doSignInWithEmailAndPassword,
@@ -10,6 +9,10 @@ import { useAuth } from "../../../../contexts/authContext";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
+  const location = useLocation();
+
+  // Get the redirect path from location state, or default to home
+  const from = location.state?.from || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +25,7 @@ const Login = () => {
       setIsSigningIn(true);
       try {
         await doSignInWithEmailAndPassword(email, password);
+        // Auth state change will trigger redirect via userLoggedIn
       } catch (error) {
         setErrorMessage(error.message || "Failed to sign in");
         setIsSigningIn(false);
@@ -37,17 +41,26 @@ const Login = () => {
         setErrorMessage(err.message || "Failed to sign in with Google");
         setIsSigningIn(false);
       });
+      // Auth state change will trigger redirect via userLoggedIn
     }
   };
 
+  // If user is already logged in, redirect to the intended destination
+  if (userLoggedIn) {
+    return <Navigate to={from} replace={true} />;
+  }
+
   return (
     <div className="auth-page">
-      {userLoggedIn && <Navigate to={"/"} replace={true} />}
-
       <main className="auth-page__container">
         <div className="auth-card">
           <div className="auth-card__header">
             <h3 className="auth-card__title">Welcome Back</h3>
+            {from !== "/" && (
+              <p className="auth-card__message">
+                Please log in to continue
+              </p>
+            )}
           </div>
           
           <form onSubmit={onSubmit} className="auth-form">

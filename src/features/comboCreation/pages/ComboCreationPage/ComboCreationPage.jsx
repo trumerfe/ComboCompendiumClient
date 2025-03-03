@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../../../contexts/authContext';
 
 import ComboBuilder from '../../components/ComboBuilder';
 import ComboForm from '../../components/ComboForm';
@@ -13,6 +14,8 @@ import './ComboCreationPage.scss';
 const ComboCreationPage = () => {
   const navigate = useNavigate();
   const { gameId, characterId } = useParams();
+  const { userLoggedIn } = useAuth();
+  
   const { 
     notationData, 
     isLoading, 
@@ -22,6 +25,14 @@ const ComboCreationPage = () => {
     handleReset,
     handleSubmit
   } = useComboCreation();
+  
+  // Check if user is logged in
+  useEffect(() => {
+    if (!userLoggedIn) {
+      toast.error('You must be logged in to create combos');
+      navigate(`/games/${gameId}/characters/${characterId}/combos`);
+    }
+  }, [userLoggedIn, navigate, gameId, characterId]);
   
   // Check if we have the required params
   useEffect(() => {

@@ -4,7 +4,7 @@
 /**
  * Service for handling notation element retrieval and rendering
  */
-import { getNotationElement as getNotationElementFromAPI } from "../../../services/mockDataService";
+import { getNotationElement as getNotationElementFromAPI } from "../../../services/apiService";
 
 /**
  * Gets a specific notation element with all its display properties
@@ -15,21 +15,22 @@ import { getNotationElement as getNotationElementFromAPI } from "../../../servic
  */
 export const fetchNotationElement = async (gameId, categoryId, elementId) => {
   try {
-    // Call the mockDataService to get the element
-    const element = await getNotationElementFromAPI(
+    // Call the API service to get the element
+    const response = await getNotationElementFromAPI(
       gameId,
       categoryId,
       elementId
     );
 
-    if (!element) {
+    // Check for success response from new API format
+    if (!response.success || !response.data) {
       console.warn(`Element not found: ${categoryId}:${elementId}`);
       return null;
     }
 
     // Return the element with categoryId and elementId included for reference
     return {
-      ...element,
+      ...response.data,
       categoryId,
       elementId,
     };
@@ -52,7 +53,7 @@ export const validateImageUrl = async (url) => {
 
   // For mock purposes, since we're dealing with mock URLs
   // In a real app, you might want to actually check if the image exists
-  return url.startsWith("/images/");
+  return url.startsWith("/images/") || url.startsWith("http");
 };
 
 /**

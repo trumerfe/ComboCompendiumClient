@@ -1,11 +1,11 @@
-// src/features/comboList/pages/ComboListPage/ComboListPage.jsx
 import React from 'react';
-import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaArrowLeft, FaPlus } from 'react-icons/fa';
+import { FaArrowLeft, FaPlus, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 import ComboList from '../../components/ComboList';
 import { useComboList } from '../../hooks/useComboList';
 import { toggleSortDirection, selectSortDirection } from '../../store/comboListSlice';
+import { useAuth } from '../../../../contexts/authContext';
 import './ComboListPage.scss';
 
 const ComboListPage = () => {
@@ -14,6 +14,8 @@ const ComboListPage = () => {
   // Get character and game IDs from URL params
   const { characterId, gameId } = useParams();
   const sortDirection = useSelector(selectSortDirection);
+  // Get auth state
+  const { userLoggedIn } = useAuth();
   
   // Use the combo list hook
   const {
@@ -33,7 +35,7 @@ const ComboListPage = () => {
   
   // Handler for Create Combo button
   const handleCreateCombo = () => {
-    navigate(`/games/${gameId}/characters/${characterId}/combos/create`);
+    navigate(`/games/${gameId}/characters/${characterId}/builder`);
   };
   
   // If there's no selected character or game, redirect to the appropriate page
@@ -49,7 +51,7 @@ const ComboListPage = () => {
             className="combo-list-page__back-button"
             onClick={navigateToCharacterSelection}
           >
-            <span className="combo-list-page__back-icon">←</span>
+            <span className="combo-list-page__back-icon"><FaArrowLeft /></span>
             Back to Characters
           </button>
         </div>
@@ -63,12 +65,22 @@ const ComboListPage = () => {
           </p>
         </div>
         
-        <button 
-          className="combo-list-page__create-button"
-          onClick={handleCreateCombo}
-        >
-          <FaPlus /> Create Combo
-        </button>
+        {userLoggedIn ? (
+          <button 
+            className="combo-list-page__create-button"
+            onClick={handleCreateCombo}
+          >
+            <FaPlus /> Create Combo
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            state={{ from: `/games/${gameId}/characters/${characterId}/combos` }}
+            className="combo-list-page__login-button"
+          >
+            Login to Create Combos
+          </Link>
+        )}
       </header>
       
       <div className="combo-list-page__sort-controls">
@@ -79,7 +91,7 @@ const ComboListPage = () => {
           title={sortDirection === 'asc' ? 'Showing least liked first' : 'Showing most liked first'}
         >
           <span className="combo-list-page__sort-icon">
-            {sortDirection === 'asc' ? '↑' : '↓'}
+            {sortDirection === 'asc' ? <FaSortAmountUp /> : <FaSortAmountDown />}
           </span>
           {sortDirection === 'asc' ? 'Ascending' : 'Descending'}
         </button>
@@ -91,7 +103,7 @@ const ComboListPage = () => {
             status={status}
             error={error}
             onRetry={loadCombos}
-            currentUserId="user123" // Hardcoded for now, would come from auth
+            // No longer passing currentUserId prop as ComboCard will get it from AuthContext
           />
         </div>
       </div>

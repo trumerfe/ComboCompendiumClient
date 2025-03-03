@@ -1,7 +1,8 @@
-// src/features/comboList/hooks/useComboList.js
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useAuth } from '../../../contexts/authContext';
 import { 
   fetchCombosByCharacterId,
   clearCombos,
@@ -20,6 +21,7 @@ import { selectSelectedGame } from '../../gameSelection/store/gameSelectionSlice
 export const useComboList = (characterId) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
   
   // Get state from Redux
   const combos = useSelector(selectCombos);
@@ -31,17 +33,35 @@ export const useComboList = (characterId) => {
   // Use provided characterId or fall back to selected character from state
   const targetCharacterId = characterId || selectedCharacter?.id;
   
-  // Function to navigate to combo creation page
+  // Function to navigate to combo creation page, with auth check
   const navigateToComboCreation = useCallback(() => {
-    if (selectedGame && selectedCharacter) {
-      navigate(`/games/${selectedGame.id}/characters/${selectedCharacter.id}/create-combo`);
+    if (!userLoggedIn) {
+      toast.info('Please log in to create combos');
+      
+      if (selectedGame && selectedCharacter) {
+        navigate('/login', { 
+          state: { from: `/games/${selectedGame.id}/characters/${selectedCharacter.id}/builder` } 
+        });
+      } else {
+        navigate('/login');
+      }
+      return;
     }
-  }, [navigate, selectedGame, selectedCharacter]);
+    
+    if (selectedGame && selectedCharacter) {
+      navigate(`/games/${selectedGame.id}/characters/${selectedCharacter.id}/builder`);
+    }
+  }, [navigate, selectedGame, selectedCharacter, userLoggedIn]);
   
   // Function to load combos
   const loadCombos = useCallback(() => {
     if (targetCharacterId) {
-      dispatch(fetchCombosByCharacterId(targetCharacterId));
+      dispatch(fetchCombosByCharacterId(targetCharacterId))
+        .unwrap()
+        .catch(err => {
+          console.error('Error loading combos:', err);
+          toast.error('Failed to load combos: ' + (err.message || err));
+        });
     }
   }, [dispatch, targetCharacterId]);
   
@@ -84,3 +104,5 @@ export const useComboList = (characterId) => {
     navigateToCharacterSelection
   };
 };
+
+export default useComboList;
