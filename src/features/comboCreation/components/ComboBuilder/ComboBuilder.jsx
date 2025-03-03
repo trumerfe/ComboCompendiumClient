@@ -54,8 +54,7 @@ const ComboBuilder = () => {
           onClick={toggleNumpadDisplay}
           title={showNumpad ? 'Show symbols' : 'Show numpad notation'}
         >
-          {showNumpad ? <FaFont /> : <FaKeyboard />}
-          <span>{showNumpad ? 'Symbol View' : 'Numpad View'}</span>
+          <span>{showNumpad ? 'Icons' : 'Numpad'}</span>
         </button>
       </div>
       

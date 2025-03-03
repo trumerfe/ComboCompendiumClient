@@ -1,29 +1,54 @@
-@use '../../../../styles/abstracts/mixins' as mixins;
+@use "../../../../styles/abstracts/mixins" as mixins;
 @use "sass:color";
 
 .combo-builder {
   @include mixins.glass-effect;
   padding: var(--spacing-4);
   border-radius: var(--card-border-radius);
-  
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__display-toggle {
+    padding: var(--spacing-2) var(--spacing-4);
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--glass-border-color);
+    border-radius: 6px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &--active {
+      background-color: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+  }
+
   &__title {
     font-size: var(--text-2xl);
     margin-bottom: var(--spacing-4);
     color: var(--color-text-primary);
   }
-  
+
   &__categories {
     display: flex;
     gap: var(--spacing-2);
     flex-wrap: wrap;
     margin-bottom: var(--spacing-6);
-    
+
     @media (max-width: 768px) {
       overflow-x: auto;
       padding-bottom: var(--spacing-2);
     }
   }
-  
+
   &__category-button {
     padding: var(--spacing-2) var(--spacing-4);
     background-color: var(--color-bg-elevated);
@@ -32,28 +57,28 @@
     color: var(--color-text-secondary);
     cursor: pointer;
     transition: all var(--transition-fast);
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
-    
+
     &--active {
       background-color: var(--color-primary);
       color: white;
       border-color: var(--color-primary);
     }
   }
-  
+
   &__container {
     display: grid;
     grid-template-columns: minmax(200px, 1fr) 3fr;
     gap: var(--spacing-6);
-    
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
   }
-  
+
   &__panel {
     border-radius: var(--card-border-radius);
     background-color: rgba(0, 0, 0, 0.2);
@@ -62,20 +87,20 @@
     display: flex;
     flex-direction: column;
   }
-  
+
   &__section-title {
     font-size: var(--text-lg);
     margin-bottom: var(--spacing-3);
     color: var(--color-text-primary);
     padding: var(--spacing-2) var(--spacing-3);
   }
-  
+
   &__elements {
     flex: 1;
     padding: var(--spacing-2);
     overflow-y: auto;
   }
-  
+
   &__canvas-container {
     border-radius: var(--card-border-radius);
     background-color: rgba(0, 0, 0, 0.2);
@@ -83,14 +108,14 @@
     display: flex;
     flex-direction: column;
   }
-  
+
   &__canvas-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-2) var(--spacing-3);
   }
-  
+
   &__clear-button {
     display: flex;
     align-items: center;
@@ -102,18 +127,18 @@
     border-radius: 4px;
     cursor: pointer;
     transition: all var(--transition-fast);
-    
+
     &:hover {
       background-color: color.adjust(#ef4444, $lightness: -10%);
     }
   }
-  
+
   &--empty {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 200px;
-    
+
     p {
       color: var(--color-text-secondary);
     }

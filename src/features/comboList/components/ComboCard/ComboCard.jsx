@@ -200,7 +200,7 @@ useEffect(() => {
             onClick={toggleNumpad}
             title={showNumpad ? 'Show symbols' : 'Show numpad'}
           >
-            {showNumpad ? 'ABC' : '123'}
+            {showNumpad ? 'Icons' : 'Numpad'}
           </button>
         </div>
       </div>

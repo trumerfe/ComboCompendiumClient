@@ -5,6 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../../../contexts/authContext';
+import { useDispatch } from 'react-redux';
+import { resetComboCreation } from '../../store/comboCreationSlice';
 
 import ComboBuilder from '../../components/ComboBuilder';
 import ComboForm from '../../components/ComboForm';
@@ -13,6 +15,7 @@ import './ComboCreationPage.scss';
 
 const ComboCreationPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { gameId, characterId } = useParams();
   const { userLoggedIn } = useAuth();
   
@@ -25,6 +28,13 @@ const ComboCreationPage = () => {
     handleReset,
     handleSubmit
   } = useComboCreation();
+  
+  // Reset form state when unmounting the component
+  useEffect(() => {
+    return () => {
+      dispatch(resetComboCreation());
+    };
+  }, [dispatch]);
   
   // Check if user is logged in
   useEffect(() => {

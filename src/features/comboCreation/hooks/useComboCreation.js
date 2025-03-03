@@ -53,6 +53,12 @@ const useComboCreation = () => {
   const isLoading = status === 'loading';
   const isError = status === 'failed';
   
+  // Reset form state when the component mounts
+  useEffect(() => {
+    dispatch(resetComboCreation());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+  
   // Check for authentication
   useEffect(() => {
     if (!userLoggedIn) {
@@ -157,6 +163,7 @@ const useComboCreation = () => {
       
       if (response.success) {
         toast.success('Combo created successfully!');
+        dispatch(resetComboCreation()); // Reset form after successful submission
         navigate(`/games/${gameId}/characters/${characterId}/combos`);
       } else {
         throw new Error(response.message || 'Failed to create combo');
@@ -168,7 +175,7 @@ const useComboCreation = () => {
     }
   }, [
     userLoggedIn, navigate, gameId, characterId,
-    comboSequence, comboDetails
+    comboSequence, comboDetails, dispatch
   ]);
   
   // Reset form
@@ -178,8 +185,9 @@ const useComboCreation = () => {
   
   // Go back to combo list
   const handleCancel = useCallback(() => {
+    dispatch(resetComboCreation()); // Reset form when canceling
     navigate(`/games/${gameId}/characters/${characterId}/combos`);
-  }, [navigate, gameId, characterId]);
+  }, [navigate, gameId, characterId, dispatch]);
   
   return {
     // State

@@ -8,7 +8,8 @@ import {
   clearCombos,
   selectCombos,
   selectComboListStatus,
-  selectComboListError
+  selectComboListError,
+  selectFilters
 } from '../store/comboListSlice';
 import { selectSelectedCharacter } from '../../characterSelection/store/characterSelectionSlice';
 import { selectSelectedGame } from '../../gameSelection/store/gameSelectionSlice';
@@ -27,6 +28,7 @@ export const useComboList = (characterId) => {
   const combos = useSelector(selectCombos);
   const status = useSelector(selectComboListStatus);
   const error = useSelector(selectComboListError);
+  const filters = useSelector(selectFilters);
   const selectedCharacter = useSelector(selectSelectedCharacter);
   const selectedGame = useSelector(selectSelectedGame);
   
@@ -96,6 +98,7 @@ export const useComboList = (characterId) => {
     combos,
     status,
     error,
+    filters,
     selectedCharacter,
     selectedGame,
     loadCombos,

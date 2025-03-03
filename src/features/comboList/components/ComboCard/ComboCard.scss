@@ -31,6 +31,38 @@
     margin-right: var(--spacing-4, 1rem);
   }
 
+  &__toggle-button {
+    background-color: rgba(30, 41, 59, 0.7); // Similar to card background but slightly different
+    border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
+    border-radius: 4px;
+    color: var(--color-text-secondary, #cbd5e1);
+    cursor: pointer;
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--weight-medium, 500);
+    padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+    transition: all var(--transition-fast, 150ms);
+    
+    &:hover {
+      background-color: rgba(51, 65, 85, 0.8);
+      color: var(--color-text-primary, #f8fafc);
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &--active {
+      background-color: var(--color-primary, #6d28d9);
+      border-color: var(--color-primary, #6d28d9);
+      color: white;
+      
+      &:hover {
+        background-color: var(--color-primary-light, #8b5cf6);
+      }
+    }
+  }
+
   &__stats {
     display: flex;
     align-items: center;

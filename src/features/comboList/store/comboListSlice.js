@@ -1,4 +1,3 @@
-// src/features/comboList/store/comboListSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { 
   getCombosByCharacterId, 
@@ -6,7 +5,7 @@ import {
   dislikeCombo as dislikeComboService
 } from '../../../services/apiService';
 
-// Helper function to safely sort combos
+// Helper function to safely sort combos by likes
 const sortCombosByLikes = (combos = [], direction = 'desc') => {
   if (!Array.isArray(combos)) return [];
   
@@ -15,7 +14,31 @@ const sortCombosByLikes = (combos = [], direction = 'desc') => {
     const aLikes = a?.likes?.length || 0;
     const bLikes = b?.likes?.length || 0;
     const comparison = aLikes - bLikes;
+    // Fix sort direction logic: 'asc' should show lowest first, 'desc' highest first
     return direction === 'asc' ? comparison : -comparison;
+  });
+};
+
+// Helper function to filter combos by difficulty and tags
+const filterCombos = (combos = [], filters = {}) => {
+  if (!Array.isArray(combos)) return [];
+  
+  return combos.filter(combo => {
+    // Filter by difficulty
+    if (filters.difficulty && filters.difficulty !== 'all' && combo.difficulty !== filters.difficulty) {
+      return false;
+    }
+    
+    // Filter by tags
+    if (filters.tags && filters.tags.length > 0) {
+      // If combo has no tags or is missing some of the required tags, filter it out
+      if (!combo.tags || !Array.isArray(combo.tags)) return false;
+      
+      // Check if combo has all selected tags (AND logic)
+      return filters.tags.every(tag => combo.tags.includes(tag));
+    }
+    
+    return true;
   });
 };
 
@@ -31,15 +54,14 @@ export const fetchCombosByCharacterId = createAsyncThunk(
       // Get current sort direction
       const { sortDirection } = getState().comboList;
       
-      // Get combos using the new API service
+      // Get combos using the API service
       const response = await getCombosByCharacterId(characterId, {
         sortBy: 'likes',
         sortDirection
       });
       
-      // Handle new API response format
+      // Handle API response format
       if (response.success) {
-        // The data is already processed by the backend with expanded notation
         return response.data;
       } else {
         throw new Error(response.message || 'Failed to fetch combos');
@@ -100,35 +122,119 @@ export const dislikeCombo = createAsyncThunk(
 const comboListSlice = createSlice({
   name: 'comboList',
   initialState: {
-    combos: [],
+    allCombos: [], // Store all unfiltered combos
+    combos: [], // Store filtered combos
     sortBy: 'likes', // Default sort by likes
     sortDirection: 'desc', // Default sort direction is descending (most likes first)
+    filters: {
+      difficulty: 'all',
+      tags: []
+    },
     status: 'idle',
     error: null
   },
   reducers: {
     clearCombos: (state) => {
+      state.allCombos = [];
       state.combos = [];
       state.status = 'idle';
       state.error = null;
+      // Reset filters
+      state.filters = {
+        difficulty: 'all',
+        tags: []
+      };
     },
     
     // Add a reducer to change sort direction
     toggleSortDirection: (state) => {
+      // Toggle between ascending and descending
       state.sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
+      
+      // Re-sort the filtered combos
+      state.combos = sortCombosByLikes(state.combos, state.sortDirection);
     },
     
     // Add a reducer to update a combo (for like/dislike actions)
     updateCombo: (state, action) => {
+      // Update in allCombos array
+      if (Array.isArray(state.allCombos)) {
+        const index = state.allCombos.findIndex(combo => combo.id === action.payload.id);
+        if (index !== -1) {
+          state.allCombos[index] = action.payload;
+        }
+      }
+      
+      // Update in filtered combos array
       if (Array.isArray(state.combos)) {
         const index = state.combos.findIndex(combo => combo.id === action.payload.id);
         if (index !== -1) {
           state.combos[index] = action.payload;
           
-          // Re-sort combos if needed
+          // Re-sort combos
           state.combos = sortCombosByLikes(state.combos, state.sortDirection);
         }
       }
+    },
+    
+    // Add filter reducers
+    setDifficultyFilter: (state, action) => {
+      state.filters.difficulty = action.payload;
+      
+      // Apply filters
+      state.combos = filterCombos(state.allCombos, state.filters);
+      
+      // Apply sort
+      state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+    },
+    
+    addTagFilter: (state, action) => {
+      // Only add if not already in the array
+      if (!state.filters.tags.includes(action.payload)) {
+        state.filters.tags.push(action.payload);
+        
+        // Apply filters
+        state.combos = filterCombos(state.allCombos, state.filters);
+        
+        // Apply sort
+        state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+      }
+    },
+    
+    removeTagFilter: (state, action) => {
+      state.filters.tags = state.filters.tags.filter(tag => tag !== action.payload);
+      
+      // Apply filters
+      state.combos = filterCombos(state.allCombos, state.filters);
+      
+      // Apply sort
+      state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+    },
+    
+    clearTagFilters: (state) => {
+      state.filters.tags = [];
+      
+      // Apply filters
+      state.combos = filterCombos(state.allCombos, {
+        ...state.filters,
+        tags: []
+      });
+      
+      // Apply sort
+      state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+    },
+    
+    clearAllFilters: (state) => {
+      state.filters = {
+        difficulty: 'all',
+        tags: []
+      };
+      
+      // Reset to all combos
+      state.combos = [...state.allCombos];
+      
+      // Apply sort
+      state.combos = sortCombosByLikes(state.combos, state.sortDirection);
     }
   },
   extraReducers: (builder) => {
@@ -144,14 +250,21 @@ const comboListSlice = createSlice({
         // Ensure we have valid data
         const combos = action.payload || [];
         
-        // The backend should handle sorting, but we'll sort again just in case
-        state.combos = sortCombosByLikes(combos, state.sortDirection);
+        // Store all unfiltered combos
+        state.allCombos = combos;
+        
+        // Apply current filters
+        state.combos = filterCombos(combos, state.filters);
+        
+        // Apply sort
+        state.combos = sortCombosByLikes(state.combos, state.sortDirection);
         state.error = null;
       })
       .addCase(fetchCombosByCharacterId.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || 'An unknown error occurred';
-        state.combos = []; // Reset combos to empty array on error
+        state.allCombos = []; // Reset combos to empty array on error
+        state.combos = [];
       })
       
       // Like combo cases
@@ -159,17 +272,25 @@ const comboListSlice = createSlice({
         // We now get the full updated combo from the API
         const updatedCombo = action.payload;
         
-        // Ensure combos exists and is an array
-        if (Array.isArray(state.combos)) {
-          // Update the combo in the list
-          state.combos = state.combos.map(combo => 
-            combo.id === updatedCombo.id 
-              ? updatedCombo
-              : combo
+        // Update in allCombos
+        if (Array.isArray(state.allCombos)) {
+          state.allCombos = state.allCombos.map(combo => 
+            combo.id === updatedCombo.id ? updatedCombo : combo
           );
+        }
+        
+        // Update in filtered combos if it exists there
+        if (Array.isArray(state.combos)) {
+          const comboExists = state.combos.some(combo => combo.id === updatedCombo.id);
           
-          // Re-sort by likes
-          state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+          if (comboExists) {
+            state.combos = state.combos.map(combo => 
+              combo.id === updatedCombo.id ? updatedCombo : combo
+            );
+            
+            // Re-sort by likes
+            state.combos = sortCombosByLikes(state.combos, state.sortDirection);
+          }
         }
       })
       .addCase(likeCombo.rejected, (state, action) => {
@@ -181,14 +302,22 @@ const comboListSlice = createSlice({
         // We now get the full updated combo from the API
         const updatedCombo = action.payload;
         
-        // Ensure combos exists and is an array
-        if (Array.isArray(state.combos)) {
-          // Update the combo in the list
-          state.combos = state.combos.map(combo => 
-            combo.id === updatedCombo.id 
-              ? updatedCombo
-              : combo
+        // Update in allCombos
+        if (Array.isArray(state.allCombos)) {
+          state.allCombos = state.allCombos.map(combo => 
+            combo.id === updatedCombo.id ? updatedCombo : combo
           );
+        }
+        
+        // Update in filtered combos if it exists there
+        if (Array.isArray(state.combos)) {
+          const comboExists = state.combos.some(combo => combo.id === updatedCombo.id);
+          
+          if (comboExists) {
+            state.combos = state.combos.map(combo => 
+              combo.id === updatedCombo.id ? updatedCombo : combo
+            );
+          }
         }
       })
       .addCase(dislikeCombo.rejected, (state, action) => {
@@ -198,12 +327,23 @@ const comboListSlice = createSlice({
 });
 
 // Export actions
-export const { clearCombos, toggleSortDirection, updateCombo } = comboListSlice.actions;
+export const { 
+  clearCombos, 
+  toggleSortDirection, 
+  updateCombo,
+  setDifficultyFilter,
+  addTagFilter,
+  removeTagFilter,
+  clearTagFilters,
+  clearAllFilters
+} = comboListSlice.actions;
 
 // Export selectors
+export const selectAllCombos = state => state.comboList?.allCombos || [];
 export const selectCombos = state => state.comboList?.combos || [];
 export const selectComboListStatus = state => state.comboList?.status || 'idle';
 export const selectComboListError = state => state.comboList?.error || null;
 export const selectSortDirection = state => state.comboList?.sortDirection || 'desc';
+export const selectFilters = state => state.comboList?.filters || { difficulty: 'all', tags: [] };
 
 export default comboListSlice.reducer;
