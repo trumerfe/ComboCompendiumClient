@@ -6,7 +6,7 @@ import NotationElement from '../../../../components/NotationElement/NotationElem
 import { normalizeNotationElement } from '../../services/NotationElementService';
 import './DraggableElement.scss';
 
-const DraggableElement = ({ element, categoryId, onDragStart, onDragEnd }) => {
+const DraggableElement = ({ element, categoryId, onDragStart, onDragEnd, showNumpad = false }) => {
   // Ensure we have a normalized element with all required properties
   const [normalizedElement, setNormalizedElement] = useState(() => 
     normalizeNotationElement({ ...element, categoryId })
@@ -44,6 +44,7 @@ const DraggableElement = ({ element, categoryId, onDragStart, onDragEnd }) => {
       <NotationElement 
         element={normalizedElement}
         className="draggable-element__content"
+        showNumpad={showNumpad} // Pass showNumpad to NotationElement
       />
     </div>
   );

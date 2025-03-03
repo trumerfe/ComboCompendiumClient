@@ -64,31 +64,33 @@ export const validateImageUrl = async (url) => {
  */
 export const normalizeNotationElement = (element) => {
   if (!element) return null;
-  
+
   // Handle the nested element structure from expandedNotation
   if (element.element) {
     return {
-      id: element.elementId || element.id || '',
-      elementId: element.elementId || element.id || '',
-      categoryId: element.categoryId || 'unknown',
-      name: element.element.name || element.name || element.id || 'Unknown',
-      symbol: element.element.symbol || element.symbol || element.id || '',
+      id: element.elementId || element.id || "",
+      elementId: element.elementId || element.id || "",
+      categoryId: element.categoryId || "unknown",
+      name: element.element.name || element.name || element.id || "Unknown",
+      symbol: element.element.symbol || element.symbol || element.id || "",
+      numpad: element.element.numpad || element.numpad || "", // Add numpad property
       imageUrl: element.element.imageUrl || element.imageUrl || null,
-      display: element.display || '',
-      description: element.description || element.element.description || ''
+      display: element.display || "",
+      description: element.description || element.element.description || "",
     };
   }
-  
+
   // Regular normalization
   return {
-    id: element.id || element.elementId || '',
-    elementId: element.elementId || element.id || '',
-    categoryId: element.categoryId || 'unknown',
-    name: element.name || element.id || 'Unknown',
-    symbol: element.symbol || element.id || '',
+    id: element.id || element.elementId || "",
+    elementId: element.elementId || element.id || "",
+    categoryId: element.categoryId || "unknown",
+    name: element.name || element.id || "Unknown",
+    symbol: element.symbol || element.id || "",
+    numpad: element.numpad || "", // Add numpad property
     imageUrl: element.imageUrl || null,
-    display: element.display || '',
-    description: element.description || ''
+    display: element.display || "",
+    description: element.description || "",
   };
 };
 
@@ -104,12 +106,22 @@ export const hasValidImage = (element) => {
 };
 
 /**
- * Gets the appropriate rendering for a notation element
- * Following the fallback flow: image → symbol → id → name
+ * Determines if a notation element has valid numpad data
  * @param {Object} element - The notation element
+ * @returns {boolean} - Whether the element has valid numpad data
+ */
+export const hasValidNumpad = (element) => {
+  return element && element.numpad && element.numpad.toString().trim() !== "";
+};
+
+/**
+ * Gets the appropriate rendering for a notation element
+ * Following the fallback flow: image → numpad (if showNumpad) → symbol → id → name
+ * @param {Object} element - The notation element
+ * @param {boolean} showNumpad - Whether to prioritize numpad notation
  * @returns {Object} - Rendering information with fallback priority
  */
-export const getElementRenderer = (element) => {
+export const getElementRenderer = (element, showNumpad = false) => {
   if (!element) {
     return { fallbackType: "text", fallbackContent: "?" };
   }
@@ -117,26 +129,59 @@ export const getElementRenderer = (element) => {
   // Normalize the element first
   const normalizedElement = normalizeNotationElement(element);
 
+  // Determine fallback type, now including numpad if showNumpad is true
+  let fallbackType = "name";
+  let fallbackContent = normalizedElement.name || "Unknown";
+
+  if (hasValidImage(normalizedElement)) {
+    fallbackType = "image";
+    fallbackContent = normalizedElement.imageUrl;
+  } else if (showNumpad && hasValidNumpad(normalizedElement)) {
+    fallbackType = "numpad";
+    fallbackContent = normalizedElement.numpad;
+  } else if (
+    normalizedElement.symbol &&
+    normalizedElement.symbol.trim() !== ""
+  ) {
+    fallbackType = "symbol";
+    fallbackContent = normalizedElement.symbol;
+  } else if (normalizedElement.id && normalizedElement.id.trim() !== "") {
+    fallbackType = "id";
+    fallbackContent = normalizedElement.id;
+  }
+
   return {
     // The normalized element has all possible rendering options
-    // The components will handle the fallback priority
     element: normalizedElement,
-
-    // For backwards compatibility
-    fallbackType: hasValidImage(normalizedElement)
-      ? "image"
-      : normalizedElement.symbol && normalizedElement.symbol.trim() !== ""
-      ? "symbol"
-      : normalizedElement.id && normalizedElement.id.trim() !== ""
-      ? "id"
-      : "name",
-
-    fallbackContent: hasValidImage(normalizedElement)
-      ? normalizedElement.imageUrl
-      : normalizedElement.symbol && normalizedElement.symbol.trim() !== ""
-      ? normalizedElement.symbol
-      : normalizedElement.id && normalizedElement.id.trim() !== ""
-      ? normalizedElement.id
-      : normalizedElement.name || "Unknown",
+    fallbackType,
+    fallbackContent,
+    // Add numpad specific properties
+    hasNumpad: hasValidNumpad(normalizedElement),
+    numpad: normalizedElement.numpad || "",
   };
+};
+
+/**
+ * Gets display value for a notation element with numpad support
+ * @param {Object} element - The notation element
+ * @param {boolean} showNumpad - Whether to prioritize numpad notation
+ * @returns {string} - The display value to use
+ */
+export const getElementDisplayValue = (element, showNumpad = false) => {
+  if (!element) return "?";
+
+  const normalizedElement = normalizeNotationElement(element);
+
+  // If showing numpad and it exists, prioritize it
+  if (showNumpad && hasValidNumpad(normalizedElement)) {
+    return normalizedElement.numpad;
+  }
+
+  // Otherwise follow normal fallback order
+  return (
+    normalizedElement.symbol ||
+    normalizedElement.id ||
+    normalizedElement.name ||
+    "?"
+  );
 };

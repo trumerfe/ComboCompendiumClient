@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import NotationElement from '../../../../components/NotationElement';
 import { useAuth } from '../../../../contexts/authContext';
-import { likeCombo, dislikeCombo } from '../../../../services/apiService';
+import { likeCombo, dislikeCombo, getGameNotation } from '../../../../services/apiService';
 import { updateCombo } from '../../store/comboListSlice';
-import { expandComboNotation } from '../../../../services/notationExpansionService';
+import { expandComboNotation } from '../../../../services/notationService';
 import './ComboCard.scss';
 
 const ComboCard = ({ combo }) => {
@@ -13,21 +13,16 @@ const ComboCard = ({ combo }) => {
   if (!combo || typeof combo !== 'object') {
     return null; // Don't render anything if combo is invalid
   }
+
+  console.log(combo)
   
   const dispatch = useDispatch();
   const { currentUser, userLoggedIn } = useAuth();
   const [isLiking, setIsLiking] = useState(false);
   const [isDisliking, setIsDisliking] = useState(false);
-  
-  // Expand notation with full details
-  const expandedNotation = useMemo(() => {
-    try {
-      return expandComboNotation(combo);
-    } catch (error) {
-      console.error('Failed to expand notation:', error);
-      return combo.notation;
-    }
-  }, [combo]);
+  const [expandedNotation, setExpandedNotation] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showNumpad, setShowNumpad] = useState(false); // Option to toggle numpad display
   
   // Destructure with default values to prevent undefined errors
   const { 
@@ -40,6 +35,62 @@ const ComboCard = ({ combo }) => {
     likes = [], 
     dislikes = [] 
   } = combo;
+
+  // Add in a useEffect
+useEffect(() => {
+  const debugAPI = async () => {
+    if (combo && combo.gameId) {
+      try {
+        console.log('Debugging API for game:', combo.gameId);
+        const response = await getGameNotation(combo.gameId);
+        console.log('API Response for notation data:', response);
+        
+        // Check if it has the expected structure
+        if (response && response.success && response.data) {
+          console.log('Response data structure:', Object.keys(response.data));
+          
+          // Check if categories exist
+          if (response.data.buttons) {
+            console.log('Sample buttons:', response.data.buttons.slice(0, 2));
+          } else {
+            console.log('No buttons category found!');
+          }
+        }
+      } catch (error) {
+        console.error('API Debug Error:', error);
+      }
+    }
+  };
+  
+  debugAPI();
+}, [combo]);
+
+  // Fetch and expand notation when the combo changes
+  useEffect(() => {
+    const loadExpandedNotation = async () => {
+      if (!combo) {
+        setExpandedNotation([]);
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        setLoading(true);
+        
+        // Expand the combo notation using the service
+        const expanded = await expandComboNotation(combo);
+        setExpandedNotation(expanded);
+      } catch (error) {
+        console.error('Error expanding notation:', error);
+        // In case of error, use the raw notation
+        setExpandedNotation(combo.notation || []);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadExpandedNotation();
+  }, [combo]);
 
   // Check if the current user has already liked/disliked
   const hasLiked = userLoggedIn && Array.isArray(likes) && currentUser?.uid && likes.includes(currentUser.uid);
@@ -123,6 +174,15 @@ const ComboCard = ({ combo }) => {
     }
   };
 
+  // Toggle numpad display
+  const toggleNumpad = () => {
+    setShowNumpad(prev => !prev);
+  };
+
+  if (loading) {
+    return <div className="combo-card combo-card--loading">Loading combo...</div>;
+  }
+
   return (
     <div className="combo-card">
       <div className="combo-card__header">
@@ -135,17 +195,31 @@ const ComboCard = ({ combo }) => {
             <span className="combo-card__damage-label">Damage:</span>
             <span className="combo-card__damage-value">{damage}</span>
           </div>
+          <button 
+            className={`combo-card__toggle-button ${showNumpad ? 'combo-card__toggle-button--active' : ''}`}
+            onClick={toggleNumpad}
+            title={showNumpad ? 'Show symbols' : 'Show numpad'}
+          >
+            {showNumpad ? 'ABC' : '123'}
+          </button>
         </div>
       </div>
       
       <div className="combo-card__notation">
-        {Array.isArray(expandedNotation) && expandedNotation.map((element, index) => (
-          <NotationElement 
-            key={`notation-element-${index}`}
-            element={element}
-            className="combo-card__notation-element"
-          />
-        ))}
+        {Array.isArray(expandedNotation) && expandedNotation.length > 0 ? (
+          expandedNotation.map((element, index) => (
+            <NotationElement 
+              key={`notation-element-${index}`}
+              element={element}
+              className="combo-card__notation-element"
+              showNumpad={showNumpad}
+            />
+          ))
+        ) : (
+          <div className="combo-card__notation-empty">
+            No notation available
+          </div>
+        )}
       </div>
       
       <div className="combo-card__footer">

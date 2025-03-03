@@ -7,7 +7,7 @@ import NotationElement from '../../../../components/NotationElement';
 import './ComboCanvas.scss';
 
 // Component for a canvas element with remove button
-const CanvasElement = ({ element, index, onRemove }) => {
+const CanvasElement = ({ element, index, onRemove, showNumpad }) => {
   // Determine the category for applying the correct CSS class
   const categoryClass = element.categoryId 
     ? `combo-canvas__element--${element.categoryId}` 
@@ -19,6 +19,7 @@ const CanvasElement = ({ element, index, onRemove }) => {
         <NotationElement 
           element={element}
           className="combo-canvas__notation-element"
+          showNumpad={showNumpad} // Pass showNumpad to NotationElement
         />
         <button 
           className="combo-canvas__element-remove" 
@@ -37,7 +38,8 @@ const ComboCanvas = ({
   onDropElement, 
   onRemoveElement, 
   onReorderElements,
-  isDragging 
+  isDragging,
+  showNumpad = false // Add showNumpad prop with default value 
 }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'NOTATION_ELEMENT',
@@ -67,6 +69,7 @@ const ComboCanvas = ({
               element={element}
               index={index}
               onRemove={onRemoveElement}
+              showNumpad={showNumpad} // Pass showNumpad to CanvasElement
             />
           ))}
           {isDragging && (

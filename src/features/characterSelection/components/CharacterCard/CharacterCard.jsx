@@ -36,7 +36,6 @@ const CharacterCard = ({ character, onSelect, isSelected }) => {
       </div>
       <div className="character-card__content">
         <h3 className="character-card__name">{character.name}</h3>
-        <span className="character-card__archetype">{character.archetype}</span>
       </div>
     </div>
   );

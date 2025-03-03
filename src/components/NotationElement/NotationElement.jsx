@@ -3,12 +3,13 @@ import './NotationElement.scss';
 
 /**
  * A reusable component for rendering notation elements with consistent fallback hierarchy
- * Handles various potential data structures
+ * Handles various potential data structures and includes numpad support
  */
 const NotationElement = ({ 
   element, 
   className = '',
   showTooltip = true,
+  showNumpad = false, // Prop to control numpad display
   ...otherProps 
 }) => {
   const [imageError, setImageError] = useState(false);
@@ -38,11 +39,21 @@ const NotationElement = ({
       );
     }
     
-    // Fallback to symbol, then name, then elementId
+    // Fallback to numpad if showNumpad is true and numpad exists
+    if (showNumpad && element.numpad) {
+      return (
+        <span className="notation-element__numpad">
+          {element.numpad}
+        </span>
+      );
+    }
+    
+    // Otherwise fallback to symbol, then name, then elementId
     const displayValue = 
       element.symbol || 
       element.name || 
       element.elementId || 
+      element.id || 
       '?';
     
     return (
@@ -55,14 +66,19 @@ const NotationElement = ({
   // Get tooltip text with multiple fallback strategies
   const getTooltipText = () => {
     // Construct a descriptive tooltip
-    const categoryName = element.categoryName || 'Notation';
-    const name = element.name || element.elementId || '';
+    const categoryName = element.categoryName || '';
+    const name = element.name || element.elementId || element.id || '';
     const description = element.description || '';
+    const numpad = element.numpad ? ` (${element.numpad})` : '';
     
-    // Combine available information
-    return description 
-      ? `${categoryName}: ${name} - ${description}`
-      : `${categoryName}: ${name}`;
+    // Build tooltip based on available information
+    let tooltip = name;
+    
+    if (numpad) tooltip += numpad;
+    if (categoryName) tooltip = `${categoryName}: ${tooltip}`;
+    if (description) tooltip += ` - ${description}`;
+    
+    return tooltip;
   };
   
   return (

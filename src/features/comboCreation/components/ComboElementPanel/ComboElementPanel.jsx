@@ -2,7 +2,13 @@ import React from 'react';
 import DraggableElement from '../DraggableElement';
 import './ComboElementPanel.scss';
 
-const ComboElementPanel = ({ elements, categoryId, onDragStart, onDragEnd }) => {
+const ComboElementPanel = ({ 
+  elements, 
+  categoryId, 
+  onDragStart, 
+  onDragEnd,
+  showNumpad = false // Add showNumpad prop with default value
+}) => {
   if (!elements || elements.length === 0) {
     return (
       <div className="combo-element-panel combo-element-panel--empty">
@@ -21,6 +27,7 @@ const ComboElementPanel = ({ elements, categoryId, onDragStart, onDragEnd }) => 
             categoryId={categoryId}
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
+            showNumpad={showNumpad} // Pass showNumpad to DraggableElement
           />
         ))}
       </div>

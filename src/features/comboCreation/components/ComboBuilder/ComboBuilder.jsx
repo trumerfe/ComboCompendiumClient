@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaKeyboard, FaFont } from 'react-icons/fa';
 import ComboElementPanel from '../ComboElementPanel';
 import ComboCanvas from '../ComboCanvas';
 import useComboCreation from '../../hooks/useComboCreation';
@@ -23,6 +23,9 @@ const ComboBuilder = () => {
       : null
   );
   
+  // Add state for numpad display
+  const [showNumpad, setShowNumpad] = useState(false);
+  
   // If no notation data, show a message
   if (!notationData || !notationData.categories) {
     return (
@@ -36,9 +39,25 @@ const ComboBuilder = () => {
     setActiveCategory(categoryId);
   };
   
+  // Toggle between symbol and numpad display
+  const toggleNumpadDisplay = () => {
+    setShowNumpad(prev => !prev);
+  };
+  
   return (
     <div className="combo-builder">
-      <h2 className="combo-builder__title">Combo Builder</h2>
+      <div className="combo-builder__header">
+        <h2 className="combo-builder__title">Combo Builder</h2>
+        
+        <button 
+          className={`combo-builder__display-toggle ${showNumpad ? 'combo-builder__display-toggle--active' : ''}`}
+          onClick={toggleNumpadDisplay}
+          title={showNumpad ? 'Show symbols' : 'Show numpad notation'}
+        >
+          {showNumpad ? <FaFont /> : <FaKeyboard />}
+          <span>{showNumpad ? 'Symbol View' : 'Numpad View'}</span>
+        </button>
+      </div>
       
       <div className="combo-builder__categories">
         {Object.keys(notationData.categories).map((categoryId) => (
@@ -65,6 +84,7 @@ const ComboBuilder = () => {
                 categoryId={activeCategory}
                 onDragStart={() => setIsDragging(true)}
                 onDragEnd={() => setIsDragging(false)}
+                showNumpad={showNumpad} // Pass down the showNumpad prop
               />
             )}
           </div>
@@ -92,6 +112,7 @@ const ComboBuilder = () => {
             onRemoveElement={handleRemoveElement}
             onReorderElements={handleReorderElements}
             isDragging={isDragging}
+            showNumpad={showNumpad} // Pass down the showNumpad prop
           />
         </div>
       </div>
