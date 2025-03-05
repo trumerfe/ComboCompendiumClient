@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { FaTrash, FaKeyboard, FaFont } from 'react-icons/fa';
-import ComboElementPanel from '../ComboElementPanel';
+import { FaTrash } from 'react-icons/fa';
 import ComboCanvas from '../ComboCanvas';
+import DraggableElement from '../DraggableElement';
 import useComboCreation from '../../hooks/useComboCreation';
 import './ComboBuilder.scss';
 
@@ -17,16 +17,8 @@ const ComboBuilder = () => {
     setIsDragging
   } = useComboCreation();
   
-  const [activeCategory, setActiveCategory] = useState(
-    notationData?.categories && Object.keys(notationData.categories).length > 0
-      ? Object.keys(notationData.categories)[0]
-      : null
-  );
-  
-  // Add state for numpad display
   const [showNumpad, setShowNumpad] = useState(false);
   
-  // If no notation data, show a message
   if (!notationData || !notationData.categories) {
     return (
       <div className="combo-builder combo-builder--empty">
@@ -35,11 +27,6 @@ const ComboBuilder = () => {
     );
   }
   
-  const handleCategoryChange = (categoryId) => {
-    setActiveCategory(categoryId);
-  };
-  
-  // Toggle between symbol and numpad display
   const toggleNumpadDisplay = () => {
     setShowNumpad(prev => !prev);
   };
@@ -58,62 +45,53 @@ const ComboBuilder = () => {
         </button>
       </div>
       
-      <div className="combo-builder__categories">
-        {Object.keys(notationData.categories).map((categoryId) => (
-          <button
-            key={categoryId}
-            className={`combo-builder__category-button ${
-              activeCategory === categoryId ? 'combo-builder__category-button--active' : ''
-            }`}
-            onClick={() => handleCategoryChange(categoryId)}
-          >
-            {categoryId.charAt(0).toUpperCase() + categoryId.slice(1)}
-          </button>
+      {/* Even more compact panel with inline category headers */}
+      <div className="combo-builder__panel">
+        {Object.entries(notationData.categories).map(([categoryId, elements]) => (
+          elements && elements.length > 0 ? (
+            <div key={categoryId} className="combo-builder__category">
+              <span className="combo-builder__category-label">{categoryId}</span>
+              <div className="combo-builder__category-elements">
+                {elements.map((element) => (
+                  <DraggableElement
+                    key={element.id}
+                    element={element}
+                    categoryId={categoryId}
+                    onDragStart={() => setIsDragging(true)}
+                    onDragEnd={() => setIsDragging(false)}
+                    showNumpad={showNumpad}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null
         ))}
       </div>
       
-      <div className="combo-builder__container">
-        {/* Element panel with draggable items */}
-        <div className="combo-builder__panel">
-          <h3 className="combo-builder__section-title">Notation Elements</h3>
-          <div className="combo-builder__elements">
-            {activeCategory && (
-              <ComboElementPanel 
-                elements={notationData.categories[activeCategory]} 
-                categoryId={activeCategory}
-                onDragStart={() => setIsDragging(true)}
-                onDragEnd={() => setIsDragging(false)}
-                showNumpad={showNumpad} // Pass down the showNumpad prop
-              />
-            )}
-          </div>
+      {/* Canvas where elements are dropped */}
+      <div className="combo-builder__canvas-container">
+        <div className="combo-builder__canvas-header">
+          <h3 className="combo-builder__section-title">Combo Sequence</h3>
+          {comboSequence.length > 0 && (
+            <button 
+              className="combo-builder__clear-button"
+              onClick={handleClearSequence}
+              title="Clear sequence"
+            >
+              <FaTrash />
+              <span>Clear</span>
+            </button>
+          )}
         </div>
         
-        {/* Canvas where elements are dropped */}
-        <div className="combo-builder__canvas-container">
-          <div className="combo-builder__canvas-header">
-            <h3 className="combo-builder__section-title">Combo Sequence</h3>
-            {comboSequence.length > 0 && (
-              <button 
-                className="combo-builder__clear-button"
-                onClick={handleClearSequence}
-                title="Clear sequence"
-              >
-                <FaTrash />
-                <span>Clear</span>
-              </button>
-            )}
-          </div>
-          
-          <ComboCanvas 
-            sequence={comboSequence}
-            onDropElement={handleAddElement}
-            onRemoveElement={handleRemoveElement}
-            onReorderElements={handleReorderElements}
-            isDragging={isDragging}
-            showNumpad={showNumpad} // Pass down the showNumpad prop
-          />
-        </div>
+        <ComboCanvas 
+          sequence={comboSequence}
+          onDropElement={handleAddElement}
+          onRemoveElement={handleRemoveElement}
+          onReorderElements={handleReorderElements}
+          isDragging={isDragging}
+          showNumpad={showNumpad}
+        />
       </div>
     </div>
   );

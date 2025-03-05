@@ -1,0 +1,24 @@
+.element-category {
+  margin-bottom: var(--spacing-2);
+
+  &__header {
+    margin-bottom: var(--spacing-1);
+  }
+
+  &__title {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-secondary);
+    margin: 0;
+    padding: var(--spacing-1) var(--spacing-2);
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  &__elements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+  }
+}
