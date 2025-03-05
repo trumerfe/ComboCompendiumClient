@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './NotationElement.scss';
 
 /**
- * A reusable component for rendering notation elements with consistent fallback hierarchy
+ * A reusable component for rendering notation elements with minimal spacing
  * Handles various potential data structures and includes numpad support
  */
 const NotationElement = ({ 
@@ -35,6 +35,7 @@ const NotationElement = ({
           alt={element.name || 'Notation Element'} 
           className="notation-element__image"
           onError={handleImageError}
+          style={{ maxWidth: '18px', maxHeight: '18px' }} // Inline style to ensure size constraints
         />
       );
     }
@@ -42,7 +43,7 @@ const NotationElement = ({
     // Fallback to numpad if showNumpad is true and numpad exists
     if (showNumpad && element.numpad) {
       return (
-        <span className="notation-element__numpad">
+        <span className="notation-element__numpad" style={{ padding: 0, margin: 0 }}>
           {element.numpad}
         </span>
       );
@@ -57,7 +58,7 @@ const NotationElement = ({
       '?';
     
     return (
-      <span className="notation-element__symbol">
+      <span className="notation-element__symbol" style={{ padding: 0, margin: 0 }}>
         {displayValue}
       </span>
     );
@@ -86,9 +87,11 @@ const NotationElement = ({
       className={`notation-element-container ${isHovered ? 'notation-element-container--show-tooltip' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{ margin: 0, padding: 0 }} // Inline style to ensure zero spacing
     >
       <span 
         className={`notation-element ${imageError ? 'notation-element--image-error' : ''} ${className}`}
+        style={{ padding: '1px', margin: 0, backgroundColor: 'transparent', border: 'none' }} // Inline style for immediate effect
         {...otherProps}
       >
         {renderElementContent()}

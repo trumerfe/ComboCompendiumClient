@@ -19,7 +19,7 @@ import { selectSelectedGame } from '../../gameSelection/store/gameSelectionSlice
  * @param {string} characterId - Character ID to fetch combos for (optional, will use selected character from state if not provided)
  * @returns {Object} Combo list state and functions
  */
-export const useComboList = (characterId) => {
+export const useComboList = (characterId, gameId) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userLoggedIn } = useAuth();
@@ -37,12 +37,29 @@ export const useComboList = (characterId) => {
   
   // Function to navigate to combo creation page, with auth check
   const navigateToComboCreation = useCallback(() => {
+    console.log('navigateToComboCreation called with:', {
+      userLoggedIn,
+      selectedGame,
+      selectedCharacter,
+      characterId, // URL parameter
+    });
+    
+    // Get the actual IDs we'll use for navigation, prioritizing URL params
+    // if Redux state is not available
+    const effectiveGameId = selectedGame?.id || gameId;
+    const effectiveCharId = selectedCharacter?.id || characterId;
+    
+    console.log('Effective IDs for navigation:', {
+      effectiveGameId,
+      effectiveCharId
+    });
+    
     if (!userLoggedIn) {
       toast.info('Please log in to create combos');
       
-      if (selectedGame && selectedCharacter) {
+      if (effectiveGameId && effectiveCharId) {
         navigate('/login', { 
-          state: { from: `/games/${selectedGame.id}/characters/${selectedCharacter.id}/builder` } 
+          state: { from: `/games/${effectiveGameId}/characters/${effectiveCharId}/builder` } 
         });
       } else {
         navigate('/login');
@@ -50,10 +67,27 @@ export const useComboList = (characterId) => {
       return;
     }
     
-    if (selectedGame && selectedCharacter) {
-      navigate(`/games/${selectedGame.id}/characters/${selectedCharacter.id}/builder`);
+    // Additional validation to prevent navigation with missing data
+    if (!effectiveGameId || !effectiveCharId) {
+      console.error('Cannot navigate: Missing game or character data', {
+        effectiveGameId,
+        effectiveCharId,
+        selectedGame,
+        selectedCharacter,
+        gameId,
+        characterId
+      });
+      toast.error('Missing game or character data. Please try again.');
+      return;
     }
-  }, [navigate, selectedGame, selectedCharacter, userLoggedIn]);
+    
+    // Log the target URL before navigating
+    const targetUrl = `/games/${effectiveGameId}/characters/${effectiveCharId}/builder`;
+    console.log('Navigating to:', targetUrl);
+    
+    // Execute the navigation
+    navigate(targetUrl);
+  }, [navigate, selectedGame, selectedCharacter, gameId, characterId, userLoggedIn]);
   
   // Function to load combos
   const loadCombos = useCallback(() => {

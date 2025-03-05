@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaPlus } from 'react-icons/fa';
 import ComboList from '../../components/ComboList';
@@ -13,7 +13,7 @@ const ComboListPage = () => {
   // Get auth state
   const { userLoggedIn } = useAuth();
   
-  // Use the combo list hook
+  // Pass both characterId and gameId to the hook
   const {
     status,
     error,
@@ -22,14 +22,26 @@ const ComboListPage = () => {
     loadCombos,
     navigateToCharacterSelection,
     navigateToComboCreation
-  } = useComboList(characterId);
+  } = useComboList(characterId, gameId);
   
-  // Handler for Create Combo button
+  // Add debug logging to check state values
+  useEffect(() => {
+    console.log('ComboListPage Debug:', {
+      characterId,
+      gameId,
+      userLoggedIn,
+      selectedCharacter,
+      selectedGame
+    });
+  }, [characterId, gameId, userLoggedIn, selectedCharacter, selectedGame]);
+  
+  // Modified handler with logging
   const handleCreateCombo = () => {
+    console.log('Create combo button clicked');
     navigateToComboCreation();
   };
   
-  // If there's no selected character or game, redirect to the appropriate page
+  // If there's no character or game ID, redirect to the appropriate page
   if (!characterId || !gameId) {
     return <Navigate to="/games" replace />;
   }
@@ -60,6 +72,7 @@ const ComboListPage = () => {
           <button 
             className="combo-list-page__create-button"
             onClick={handleCreateCombo}
+            data-testid="create-combo-button"
           >
             <FaPlus /> Create Combo
           </button>
@@ -75,10 +88,7 @@ const ComboListPage = () => {
       </header>
       
       <div className="combo-list-page__content">
-        {/* Integrated Controls Component */}
         <ComboControls />
-        
-        {/* Combo List */}
         <div className="combo-list-page__combos">
           <ComboList
             status={status}

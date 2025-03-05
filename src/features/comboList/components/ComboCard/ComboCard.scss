@@ -1,4 +1,3 @@
-// ComboCard.scss
 .combo-card {
   display: flex;
   flex-direction: column;
@@ -112,7 +111,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--spacing-2, 0.5rem);
+    gap: 2px; /* Reduced from var(--spacing-2, 0.5rem) to 2px */
     margin-bottom: var(--spacing-4, 1rem);
     padding: var(--spacing-3, 0.75rem);
     background-color: rgba(15, 23, 42, 0.3);
@@ -124,47 +123,32 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+    padding: 2px; /* Reduced from var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem) to just 2px */
     border-radius: 4px;
     font-weight: var(--weight-medium, 500);
-    background-color: rgba(30, 41, 59, 0.7);
-    min-width: 24px;
-    min-height: 24px;
+    background-color: transparent; /* Changed from rgba(30, 41, 59, 0.7) to transparent */
+    min-width: 20px; /* Reduced from 24px */
+    min-height: 20px; /* Reduced from 24px */
+    margin: 0; /* Ensure no margins */
     
     &--image-error {
       background-color: rgba(255, 200, 200, 0.1);
     }
 
-    // Category-specific styling - matching the draggable elements
-    &--buttons {
-      background-color: rgba(109, 40, 217, 0.1);
-      border-color: rgba(109, 40, 217, 0.3);
-    }
-    
-    &--directions {
-      background-color: rgba(59, 130, 246, 0.1);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-    
-    &--modifiers {
-      background-color: rgba(249, 115, 22, 0.1);
-      border-color: rgba(249, 115, 22, 0.3);
-    }
-    
-    &--motions {
-      background-color: rgba(236, 72, 153, 0.1);
-      border-color: rgba(236, 72, 153, 0.3);
-    }
-    
+    // Category-specific styling - Keep color coding but make more subtle
+    &--buttons, 
+    &--directions, 
+    &--modifiers, 
+    &--motions,
     &--text {
-      background-color: rgba(16, 185, 129, 0.1);
-      border-color: rgba(16, 185, 129, 0.3);
+      background-color: transparent; /* Remove background colors */
+      border: none; /* Remove borders */
     }
   }
 
   &__notation-image {
-    max-width: 24px;
-    max-height: 24px;
+    max-width: 20px; /* Reduced from 24px */
+    max-height: 20px; /* Reduced from 24px */
   }
 
   &__footer {
